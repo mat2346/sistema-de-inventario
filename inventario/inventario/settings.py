@@ -111,21 +111,18 @@ WSGI_APPLICATION = "inventario.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Primera opción: usar DATABASE_URL de Supabase/Render
+# Configuración para Supabase PostgreSQL
 if os.getenv('DATABASE_URL'):
-    try:
-        DATABASES = {
-            'default': dj_database_url.parse(
-                os.getenv('DATABASE_URL'),
-                conn_max_age=600,
-                conn_health_checks=True,
-            )
-        }
-        # Asegurar que use el backend correcto
-        DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
-    except Exception as e:
-        # Fallback a SQLite si PostgreSQL no está disponible
-        print(f"Warning: Could not configure PostgreSQL, falling back to SQLite: {e}")
+    # Usar Supabase PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.parse(
+            os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+    # Forzar uso de SQLite si hay problemas con PostgreSQL
+    if os.getenv('FORCE_SQLITE', 'false').lower() == 'true':
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',

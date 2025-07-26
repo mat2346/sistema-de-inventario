@@ -2,15 +2,12 @@ services:
   - type: web
     name: inventario-backend
     env: python
-    runtime: python-3.10.14
-    buildCommand: "./build-sqlite.sh"
+    buildCommand: "pip install -r requirements-sqlite.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
     plan: free
     envVars:
-      - key: PYTHON_VERSION
-        value: "3.10.14"
-      - key: USE_SQLITE
-        value: "true"
+      - key: DATABASE_URL
+        value: # Aquí pondrás tu URL de Supabase
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
