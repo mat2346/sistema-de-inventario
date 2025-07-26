@@ -2,13 +2,13 @@ services:
   - type: web
     name: inventario-backend
     env: python
-    runtime: python-3.11.8
+    runtime: python-3.10.14
     buildCommand: "./build.sh"
     startCommand: "gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
     plan: free
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11.8"
+        value: "3.10.14"
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
