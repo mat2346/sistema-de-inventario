@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '0.0.0.0',
     '.onrender.com',  # Para Render
+    '*.onrender.com',  # Wildcard para subdominios
 ]
 
 # Agregar el dominio específico si existe

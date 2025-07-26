@@ -27,7 +27,7 @@
    - **Name**: `toyosaki-inventario-api`
    - **Environment**: `Python 3`
    - **Build Command**: `./build.sh`
-   - **Start Command**: `gunicorn inventario.wsgi:application`
+   - **Start Command**: `gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120`
 
 ### 5. Variables de entorno
 En la sección "Environment Variables", agrega:

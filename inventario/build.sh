@@ -3,11 +3,13 @@
 
 set -o errexit  # exit on error
 
-echo "🔧 Instalando dependencias..."
-pip install --upgrade pip
+echo "🔧 Actualizando pip y setuptools..."
+pip install --upgrade pip setuptools
+
+echo "📦 Instalando dependencias..."
 pip install -r requirements.txt
 
-echo "📦 Recolectando archivos estáticos..."
+echo "� Recolectando archivos estáticos..."
 python manage.py collectstatic --no-input
 
 echo "🗄️ Ejecutando migraciones..."
