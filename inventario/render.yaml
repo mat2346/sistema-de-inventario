@@ -3,21 +3,17 @@ services:
     name: inventario-backend
     env: python
     runtime: python-3.10.14
-    buildCommand: "./build.sh"
+    buildCommand: "./build-sqlite.sh"
     startCommand: "gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
     plan: free
     envVars:
       - key: PYTHON_VERSION
         value: "3.10.14"
+      - key: USE_SQLITE
+        value: "true"
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
         value: "False"
       - key: WEB_CONCURRENCY
         value: "1"
-
-databases:
-  - name: inventario-db
-    databaseName: inventario
-    user: inventario
-    plan: free

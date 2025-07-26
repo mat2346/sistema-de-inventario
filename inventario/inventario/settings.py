@@ -113,15 +113,33 @@ WSGI_APPLICATION = "inventario.wsgi.application"
 
 # Primera opción: usar DATABASE_URL de Supabase/Render
 if os.getenv('DATABASE_URL'):
+    try:
+        DATABASES = {
+            'default': dj_database_url.parse(
+                os.getenv('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+        # Asegurar que use el backend correcto
+        DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+    except Exception as e:
+        # Fallback a SQLite si PostgreSQL no está disponible
+        print(f"Warning: Could not configure PostgreSQL, falling back to SQLite: {e}")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+elif os.getenv('USE_SQLITE'):
+    # Opción SQLite para deployment sin PostgreSQL
     DATABASES = {
-        'default': dj_database_url.parse(
-            os.getenv('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-    # Asegurar que use el backend correcto
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 else:
     # Configuración fallback para desarrollo local
     DATABASES = {
