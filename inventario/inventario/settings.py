@@ -111,7 +111,7 @@ WSGI_APPLICATION = "inventario.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Primera opción: usar DATABASE_URL de Supabase
+# Primera opción: usar DATABASE_URL de Supabase/Render
 if os.getenv('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.parse(
@@ -120,6 +120,8 @@ if os.getenv('DATABASE_URL'):
             conn_health_checks=True,
         )
     }
+    # Asegurar que use el backend correcto
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 else:
     # Configuración fallback para desarrollo local
     DATABASES = {
@@ -130,6 +132,9 @@ else:
             "PASSWORD": os.getenv('DB_PASSWORD', 'inventario_db'),
             "HOST": os.getenv('DB_HOST', 'localhost'),
             "PORT": os.getenv('DB_PORT', '5432'),
+            "OPTIONS": {
+                'connect_timeout': 60,
+            }
         }
     }
 

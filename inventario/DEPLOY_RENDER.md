@@ -24,8 +24,9 @@
 2. Selecciona "Web Service"
 3. Conecta tu repositorio
 4. Configuración:
-   - **Name**: `toyosaki-inventario-api`
+   - **Name**: `inventario-backend`
    - **Environment**: `Python 3`
+   - **Runtime**: `Python 3.11.8`
    - **Build Command**: `./build.sh`
    - **Start Command**: `gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120`
 
