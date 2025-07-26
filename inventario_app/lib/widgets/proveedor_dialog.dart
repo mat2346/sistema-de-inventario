@@ -249,12 +249,9 @@ class _ProveedorDialogState extends State<ProveedorDialog> {
       );
 
       if (widget.proveedor == null) {
-        await proveedorProvider.addProveedor(proveedorData);
+        await proveedorProvider.createProveedor(proveedorData);
       } else {
-        await proveedorProvider.updateProveedor(
-          proveedorData.id!,
-          proveedorData,
-        );
+        await proveedorProvider.updateProveedor(proveedorData);
       }
 
       Navigator.pop(context, true);

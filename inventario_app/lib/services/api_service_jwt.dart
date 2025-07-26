@@ -14,8 +14,16 @@ class ApiServiceJWT {
     };
 
     final accessToken = await TokenStorage.getAccessToken();
+    print(
+      '🔑 AccessToken retrieved: ${accessToken != null ? "Found" : "NOT FOUND"}',
+    );
     if (accessToken != null) {
       headers['Authorization'] = 'Bearer $accessToken';
+      print(
+        '🔑 Authorization header added: Bearer ${accessToken.substring(0, 20)}...',
+      );
+    } else {
+      print('⚠️ No access token found in storage');
     }
 
     return headers;
@@ -25,8 +33,15 @@ class ApiServiceJWT {
   static Future<bool> _refreshTokenIfNeeded() async {
     try {
       final refreshToken = await TokenStorage.getRefreshToken();
-      if (refreshToken == null) return false;
+      print(
+        '🔄 Refresh token check: ${refreshToken != null ? "Found" : "NOT FOUND"}',
+      );
+      if (refreshToken == null) {
+        print('❌ No refresh token available');
+        return false;
+      }
 
+      print('🔄 Attempting token refresh...');
       final response = await http.post(
         Uri.parse('$baseUrl/auth/refresh/'),
         headers: {
@@ -36,20 +51,25 @@ class ApiServiceJWT {
         body: json.encode({'refresh': refreshToken}),
       );
 
+      print('🔄 Refresh response status: ${response.statusCode}');
+      print('🔄 Refresh response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         await TokenStorage.saveTokens(
           data['access'],
           data['refresh'] ?? refreshToken,
         );
+        print('✅ Token refreshed successfully');
         return true;
       }
 
       // Si el refresh token también expiró, limpiar todo
+      print('❌ Refresh failed, clearing tokens');
       await TokenStorage.clearTokens();
       return false;
     } catch (e) {
-      print('Error refreshing token: $e');
+      print('❌ Error refreshing token: $e');
       await TokenStorage.clearTokens();
       return false;
     }
@@ -205,5 +225,66 @@ class ApiServiceJWT {
   // Método para limpiar autenticación
   static Future<void> clearAuth() async {
     await TokenStorage.clearTokens();
+  }
+
+  // Helper methods para manejo de respuestas
+  static Future<T> handleRequest<T>(
+    Future<http.Response> requestFuture,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    try {
+      final response = await requestFuture;
+      print('📋 Response body: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        return fromJson(data);
+      } else {
+        print('❌ Error ${response.statusCode}: ${response.body}');
+        throw Exception(
+          'Error del servidor: ${response.statusCode} - ${response.body}',
+        );
+      }
+    } catch (e) {
+      print('❌ Error en handleRequest: $e');
+      rethrow;
+    }
+  }
+
+  static Future<List<T>> handleListRequest<T>(
+    Future<http.Response> requestFuture,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    try {
+      final response = await requestFuture;
+      print('📋 Response body: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body);
+
+        if (data is Map<String, dynamic> && data.containsKey('results')) {
+          // Respuesta paginada
+          final results = data['results'] as List;
+          return results
+              .map((json) => fromJson(json as Map<String, dynamic>))
+              .toList();
+        } else if (data is List) {
+          // Lista simple
+          return data
+              .map((json) => fromJson(json as Map<String, dynamic>))
+              .toList();
+        } else {
+          throw Exception('Formato de respuesta inesperado');
+        }
+      } else {
+        print('❌ Error ${response.statusCode}: ${response.body}');
+        throw Exception(
+          'Error del servidor: ${response.statusCode} - ${response.body}',
+        );
+      }
+    } catch (e) {
+      print('❌ Error en handleListRequest: $e');
+      rethrow;
+    }
   }
 }

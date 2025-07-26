@@ -244,3 +244,35 @@ def test_login(request):
         return Response({
             'error': 'Usuario admin no encontrado. Ejecutar: python manage.py crear_empleados'
         }, status=400)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def debug_auth(request):
+    """
+    Endpoint para debuggear problemas de autenticación
+    """
+    auth_header = request.META.get('HTTP_AUTHORIZATION', 'No Authorization header')
+    
+    return Response({
+        'method': request.method,
+        'path': request.path,
+        'headers': {
+            'authorization': auth_header,
+            'content_type': request.META.get('CONTENT_TYPE', 'Not set'),
+            'user_agent': request.META.get('HTTP_USER_AGENT', 'Not set')
+        },
+        'user_info': {
+            'is_authenticated': request.user.is_authenticated if hasattr(request, 'user') else False,
+            'user_id': request.user.id if hasattr(request, 'user') and request.user.is_authenticated else None,
+        },
+        'session_info': {
+            'session_key': request.session.session_key,
+            'has_empleado_id': 'empleado_id' in request.session,
+            'empleado_id': request.session.get('empleado_id', 'Not set')
+        },
+        'jwt_info': {
+            'has_auth_token': hasattr(request, 'auth') and request.auth is not None,
+            'token_payload': str(request.auth.payload) if hasattr(request, 'auth') and request.auth else 'No token'
+        }
+    })

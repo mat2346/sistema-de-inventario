@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../models/proveedor.dart';
-import '../services/api_service.dart';
+import '../services/api_service_jwt.dart';
 
 class ProveedorProvider with ChangeNotifier {
   List<Proveedor> _proveedores = [];
@@ -20,152 +18,109 @@ class ProveedorProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final url = '${ApiService.baseUrl}/proveedores/';
-      print('🔄 ProveedorProvider: URL a llamar: $url');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      _proveedores = await ApiServiceJWT.handleListRequest(
+        ApiServiceJWT.get('/proveedores/'),
+        (json) => Proveedor.fromJson(json),
       );
-
-      print('🔄 ProveedorProvider: Status code: ${response.statusCode}');
-      print('🔄 ProveedorProvider: Response body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        try {
-          final dynamic responseData = json.decode(response.body);
-
-          print(
-            '🔍 ProveedorProvider: Response data type: ${responseData.runtimeType}',
-          );
-          print('🔍 ProveedorProvider: Response data: $responseData');
-
-          if (responseData is Map<String, dynamic>) {
-            // Manejar respuesta paginada del backend Django Rest Framework
-            if (responseData.containsKey('results')) {
-              final List<dynamic> results = responseData['results'] ?? [];
-              _proveedores =
-                  results.map((json) => Proveedor.fromJson(json)).toList();
-              print(
-                '🔍 ProveedorProvider: Respuesta paginada procesada - ${_proveedores.length} proveedores',
-              );
-            } else {
-              // Si es un objeto individual
-              _proveedores = [Proveedor.fromJson(responseData)];
-              print('🔍 ProveedorProvider: Objeto individual procesado');
-            }
-          } else if (responseData is List) {
-            // Si la respuesta es una lista directa
-            _proveedores =
-                responseData.map((json) => Proveedor.fromJson(json)).toList();
-            print(
-              '🔍 ProveedorProvider: Lista directa procesada - ${_proveedores.length} proveedores',
-            );
-          } else {
-            print('🔍 ProveedorProvider: Formato de respuesta no reconocido');
-            _proveedores = [];
-          }
-
-          print(
-            '🔍 ProveedorProvider: Proveedores cargados: ${_proveedores.map((p) => '${p.id}: ${p.nombre}').toList()}',
-          );
-          _error = null;
-        } catch (parseError) {
-          print('❌ ProveedorProvider: Error al parsear: $parseError');
-          _error = 'Error al procesar datos: $parseError';
-          _proveedores = [];
-        }
-      } else {
-        print('❌ ProveedorProvider: Error HTTP ${response.statusCode}');
-        _error = 'Error al cargar proveedores: ${response.statusCode}';
-      }
+      print('✅ ProveedorProvider: ${_proveedores.length} proveedores cargados');
     } catch (e) {
-      print('❌ ProveedorProvider: Error de conexión: $e');
       _error = 'Error de conexión: $e';
+      print('❌ ProveedorProvider Exception: $_error');
     } finally {
-      print('🔄 ProveedorProvider: Finalizando carga - isLoading: false');
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> addProveedor(Proveedor proveedor) async {
-    try {
-      final response = await http.post(
-        Uri.parse('${ApiService.baseUrl}/proveedores/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode(proveedor.toJson()),
-      );
+  Future<bool> createProveedor(Proveedor proveedor) async {
+    print('🔄 ProveedorProvider: Creando proveedor: ${proveedor.nombre}');
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-      if (response.statusCode == 201) {
-        final newProveedor = Proveedor.fromJson(json.decode(response.body));
-        _proveedores.add(newProveedor);
+    try {
+      final newProveedor = await ApiServiceJWT.handleRequest(
+        ApiServiceJWT.post('/proveedores/', proveedor.toJson()),
+        (json) => Proveedor.fromJson(json),
+      );
+      _proveedores.add(newProveedor);
+      print('✅ ProveedorProvider: Proveedor creado con ID: ${newProveedor.id}');
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = 'Error de conexión: $e';
+      print('❌ ProveedorProvider Exception: $_error');
+      notifyListeners();
+      return false;
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  Future<bool> updateProveedor(Proveedor proveedor) async {
+    print('🔄 ProveedorProvider: Actualizando proveedor ID: ${proveedor.id}');
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedProveedor = await ApiServiceJWT.handleRequest(
+        ApiServiceJWT.put('/proveedores/${proveedor.id}/', proveedor.toJson()),
+        (json) => Proveedor.fromJson(json),
+      );
+      final index = _proveedores.indexWhere((p) => p.id == proveedor.id);
+      if (index != -1) {
+        _proveedores[index] = updatedProveedor;
+        print('✅ ProveedorProvider: Proveedor actualizado');
         notifyListeners();
-      } else {
-        throw Exception('Error al crear proveedor: ${response.statusCode}');
       }
+      return true;
     } catch (e) {
-      throw Exception('Error de conexión: $e');
+      _error = 'Error de conexión: $e';
+      print('❌ ProveedorProvider Exception: $_error');
+      notifyListeners();
+      return false;
+    } finally {
+      _isLoading = false;
     }
   }
 
-  Future<void> updateProveedor(int id, Proveedor proveedor) async {
+  Future<bool> deleteProveedor(int id) async {
+    print('🔄 ProveedorProvider: Eliminando proveedor ID: $id');
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
     try {
-      final response = await http.put(
-        Uri.parse('${ApiService.baseUrl}/proveedores/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode(proveedor.toJson()),
-      );
-
-      if (response.statusCode == 200) {
-        final updatedProveedor = Proveedor.fromJson(json.decode(response.body));
-        final index = _proveedores.indexWhere((p) => p.id == id);
-        if (index != -1) {
-          _proveedores[index] = updatedProveedor;
-          notifyListeners();
-        }
-      } else {
-        throw Exception(
-          'Error al actualizar proveedor: ${response.statusCode}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Error de conexión: $e');
-    }
-  }
-
-  Future<void> deleteProveedor(int id) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('${ApiService.baseUrl}/proveedores/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 204) {
+      final response = await ApiServiceJWT.delete('/proveedores/$id/');
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         _proveedores.removeWhere((proveedor) => proveedor.id == id);
+        print('✅ ProveedorProvider: Proveedor eliminado');
         notifyListeners();
+        return true;
       } else {
-        throw Exception('Error al eliminar proveedor: ${response.statusCode}');
+        _error = 'Error al eliminar proveedor';
+        print('❌ ProveedorProvider: ${_error}');
+        notifyListeners();
+        return false;
       }
     } catch (e) {
-      throw Exception('Error de conexión: $e');
+      _error = 'Error de conexión: $e';
+      print('❌ ProveedorProvider Exception: $_error');
+      notifyListeners();
+      return false;
+    } finally {
+      _isLoading = false;
     }
   }
 
   void clearError() {
     _error = null;
+    notifyListeners();
+  }
+
+  void clearProveedores() {
+    _proveedores.clear();
     notifyListeners();
   }
 }

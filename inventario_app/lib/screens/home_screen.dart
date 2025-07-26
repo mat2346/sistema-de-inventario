@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider_jwt.dart';
 import '../theme/toyosaki_colors.dart';
 import 'productos_screen.dart';
 import 'categorias_screen.dart';
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey[200]!),
             ),
-            child: Consumer<AuthProvider>(
+            child: Consumer<AuthProviderJWT>(
               builder: (context, authProvider, child) {
                 return Row(
                   children: [
@@ -626,7 +626,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Provider.of<AuthProvider>(context, listen: false).logout();
+                  Provider.of<AuthProviderJWT>(context, listen: false).logout();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,

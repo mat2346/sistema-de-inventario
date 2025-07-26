@@ -30,11 +30,39 @@ class AuthServiceJWT {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
+        print('🔍 Debug - authenticated: ${data['authenticated']}');
+        print(
+          '🔍 Debug - authenticated type: ${data['authenticated'].runtimeType}',
+        );
+        print(
+          '🔍 Debug - tokens: ${data['tokens'] != null ? "EXISTS" : "NULL"}',
+        );
+
         if (data['authenticated'] == true && data['tokens'] != null) {
           // Guardar tokens JWT
+          print('💾 Guardando tokens en TokenStorage...');
+          print(
+            '💾 Access Token: ${data['tokens']['access'].substring(0, 50)}...',
+          );
+          print(
+            '💾 Refresh Token: ${data['tokens']['refresh'].substring(0, 50)}...',
+          );
+
           await TokenStorage.saveTokens(
             data['tokens']['access'],
             data['tokens']['refresh'],
+          );
+
+          print('✅ Tokens guardados exitosamente');
+
+          // Verificar que se guardaron correctamente
+          final savedAccess = await TokenStorage.getAccessToken();
+          final savedRefresh = await TokenStorage.getRefreshToken();
+          print(
+            '🔍 Verificación - Access guardado: ${savedAccess != null ? "SÍ" : "NO"}',
+          );
+          print(
+            '🔍 Verificación - Refresh guardado: ${savedRefresh != null ? "SÍ" : "NO"}',
           );
 
           // Crear empleado desde la respuesta
@@ -47,6 +75,9 @@ class AuthServiceJWT {
             'tokens': data['tokens'],
           };
         } else {
+          print(
+            '❌ Condición fallida - authenticated: ${data['authenticated']}, tokens: ${data['tokens']}',
+          );
           return {
             'success': false,
             'message': data['message'] ?? 'Error de autenticación',

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/salida.dart';
-import '../services/api_service.dart';
+import '../services/api_service_jwt.dart';
 
 class SalidaProvider with ChangeNotifier {
   List<Salida> _salidas = [];
@@ -19,9 +19,9 @@ class SalidaProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('🔄 Cargando salidas desde: ${ApiService.baseUrl}/salidas/');
+      print('🔄 Cargando salidas desde: ${ApiServiceJWT.baseUrl}/salidas/');
       final response = await http.get(
-        Uri.parse('${ApiService.baseUrl}/salidas/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -87,7 +87,7 @@ class SalidaProvider with ChangeNotifier {
   Future<void> addSalida(Salida salida) async {
     try {
       final response = await http.post(
-        Uri.parse('${ApiService.baseUrl}/salidas/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -110,7 +110,7 @@ class SalidaProvider with ChangeNotifier {
   Future<void> updateSalida(int id, Salida salida) async {
     try {
       final response = await http.put(
-        Uri.parse('${ApiService.baseUrl}/salidas/$id/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/salidas/$id/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -136,7 +136,7 @@ class SalidaProvider with ChangeNotifier {
   Future<void> deleteSalida(int id) async {
     try {
       final response = await http.delete(
-        Uri.parse('${ApiService.baseUrl}/salidas/$id/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/salidas/$id/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

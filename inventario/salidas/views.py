@@ -1,4 +1,5 @@
 from rest_framework import viewsets, filters, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import transaction
@@ -10,6 +11,7 @@ class SalidaViewSet(viewsets.ModelViewSet):
     queryset = Salida.objects.select_related(
         'producto', 'sucursal', 'empleado'
     ).all()
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['sucursal', 'empleado', 'producto', 'motivo']
     search_fields = ['producto__nombre', 'empleado__nombre', 'motivo']

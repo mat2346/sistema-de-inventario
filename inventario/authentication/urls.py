@@ -5,7 +5,8 @@ from .views import (
     empleado_session, 
     check_auth_status,
     test_login,
-    token_refresh
+    token_refresh,
+    debug_auth
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     path('api/auth/refresh/', token_refresh, name='token-refresh'),
     path('api/auth/status/', check_auth_status, name='auth-status'),
     path('api/auth/test/', test_login, name='test-login'),  # Endpoint de testing
+    path('api/auth/debug/', debug_auth, name='debug-auth'),  # Endpoint de debug
 ]

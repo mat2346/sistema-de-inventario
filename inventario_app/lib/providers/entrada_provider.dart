@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/entrada.dart';
-import '../services/api_service.dart';
+import '../services/api_service_jwt.dart';
 
 class EntradaProvider with ChangeNotifier {
   List<Entrada> _entradas = [];
@@ -20,7 +20,7 @@ class EntradaProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final url = '${ApiService.baseUrl}/entradas/';
+      final url = '${ApiServiceJWT.baseUrl}/entradas/';
       print('🔄 EntradaProvider: URL a llamar: $url');
 
       final response = await http.get(
@@ -103,7 +103,7 @@ class EntradaProvider with ChangeNotifier {
   Future<void> addEntrada(Entrada entrada) async {
     try {
       final response = await http.post(
-        Uri.parse('${ApiService.baseUrl}/entradas/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/entradas/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -126,7 +126,7 @@ class EntradaProvider with ChangeNotifier {
   Future<void> updateEntrada(int id, Entrada entrada) async {
     try {
       final response = await http.put(
-        Uri.parse('${ApiService.baseUrl}/entradas/$id/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/entradas/$id/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -152,7 +152,7 @@ class EntradaProvider with ChangeNotifier {
   Future<void> deleteEntrada(int id) async {
     try {
       final response = await http.delete(
-        Uri.parse('${ApiService.baseUrl}/entradas/$id/'),
+        Uri.parse('${ApiServiceJWT.baseUrl}/entradas/$id/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

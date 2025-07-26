@@ -1,4 +1,5 @@
 from rest_framework import viewsets, filters, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,6 +9,7 @@ import cloudinary.uploader
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.select_related('categoria').all()
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['categoria', 'categoria__nombre']
     search_fields = ['nombre', 'descripcion']

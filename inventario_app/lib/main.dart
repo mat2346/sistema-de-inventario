@@ -8,7 +8,7 @@ import 'providers/sucursales_provider.dart';
 import 'providers/entrada_provider.dart';
 import 'providers/salida_provider.dart';
 import 'providers/proveedor_provider.dart';
-import 'providers/auth_provider.dart';
+import 'providers/auth_provider_jwt.dart';
 import 'widgets/auth_wrapper.dart';
 
 void main() {
@@ -22,7 +22,7 @@ class InventarioApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProviderJWT()),
         ChangeNotifierProvider(create: (_) => ProductoProvider()),
         ChangeNotifierProvider(create: (_) => CategoriaProvider()),
         ChangeNotifierProvider(create: (_) => InventarioProvider()),

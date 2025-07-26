@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider_jwt.dart';
 import '../theme/toyosaki_colors.dart';
 
 class ToyosakiLoginScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
     });
 
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = Provider.of<AuthProviderJWT>(context, listen: false);
       await authProvider.login(
         _nombreController.text,
         _passwordController.text,

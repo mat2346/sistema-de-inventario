@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: toyosaki-inventario-api
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn inventario.wsgi:application"
+    plan: free
+    autoDeploy: false
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: WEB_CONCURRENCY
+        value: 4
+
+databases:
+  - name: toyosaki-inventario-db
+    plan: free

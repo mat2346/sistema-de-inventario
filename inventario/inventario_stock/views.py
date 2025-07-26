@@ -1,4 +1,5 @@
 from rest_framework import viewsets, filters, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,6 +9,7 @@ from .serializers import InventarioSerializer, InventarioCreateSerializer
 
 class InventarioViewSet(viewsets.ModelViewSet):
     queryset = Inventario.objects.select_related('producto', 'sucursal', 'producto__categoria').all()
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['sucursal', 'producto', 'producto__categoria']
     search_fields = ['producto__nombre', 'sucursal__nombre']
