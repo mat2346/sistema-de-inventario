@@ -11,7 +11,7 @@ echo "🔧 Actualizando pip, setuptools y wheel..."
 pip install --upgrade pip setuptools wheel
 
 echo "📦 Instalando psycopg[binary] específicamente..."
-pip install "psycopg[binary]==3.1.18"
+pip install "psycopg[binary]==3.2.9"
 
 echo "📦 Instalando resto de dependencias..."
 pip install -r requirements.txt
