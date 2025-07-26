@@ -2,7 +2,7 @@ services:
   - type: web
     name: inventario-backend
     env: python
-    buildCommand: "pip install -r requirements-sqlite.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    buildCommand: "./build-supabase.sh"
     startCommand: "gunicorn inventario.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
     plan: free
     envVars:

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build-supabase.sh - Build script for Supabase deployment without psycopg2
+# build-supabase.sh - Build script for Supabase deployment with psycopg3
 
 set -o errexit  # exit on error
 
@@ -10,10 +10,13 @@ which python
 echo "🔧 Actualizando pip, setuptools y wheel..."
 pip install --upgrade pip setuptools wheel
 
-echo "📦 Instalando dependencias (sin psycopg2)..."
-pip install -r requirements-sqlite.txt
+echo "📦 Instalando psycopg[binary] específicamente..."
+pip install "psycopg[binary]==3.1.18"
 
-echo "🗄️ Configurando variable para usar Supabase directamente..."
+echo "📦 Instalando resto de dependencias..."
+pip install -r requirements.txt
+
+echo "🗄️ Configurando variable para usar Supabase..."
 export FORCE_SQLITE=false
 
 echo "📂 Recolectando archivos estáticos..."
@@ -25,4 +28,4 @@ python manage.py migrate
 echo "👤 Configurando datos iniciales..."
 python manage.py setup_production || echo "⚠️ No se pudo ejecutar setup_production, continuando..."
 
-echo "✅ Build completado exitosamente con Supabase!"
+echo "✅ Build completado exitosamente con Supabase y psycopg3!"

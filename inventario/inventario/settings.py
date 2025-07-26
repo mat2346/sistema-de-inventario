@@ -111,7 +111,7 @@ WSGI_APPLICATION = "inventario.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Configuración para Supabase PostgreSQL
+# Configuración para Supabase PostgreSQL con psycopg3
 if os.getenv('DATABASE_URL'):
     # Usar Supabase PostgreSQL
     DATABASES = {
@@ -121,6 +121,9 @@ if os.getenv('DATABASE_URL'):
             conn_health_checks=True,
         )
     }
+    # Forzar uso de psycopg3 backend
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+    
     # Forzar uso de SQLite si hay problemas con PostgreSQL
     if os.getenv('FORCE_SQLITE', 'false').lower() == 'true':
         DATABASES = {
