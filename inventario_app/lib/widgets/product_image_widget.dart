@@ -54,14 +54,29 @@ class _ProductImageWidgetState extends State<ProductImageWidget> {
             );
           },
           errorBuilder: (context, error, stackTrace) {
-            return _buildPlaceholder(hasError: true);
+            // Si hay error cargando la imagen de red, mostrar imagen por defecto
+            return _buildDefaultImage();
           },
         ),
       );
     } else {
-      // Mostrar placeholder sin botones de acción
-      return _buildPlaceholder();
+      // Mostrar imagen por defecto cuando no hay imagen
+      return _buildDefaultImage();
     }
+  }
+
+  Widget _buildDefaultImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(
+        'lib/images/no_image.jpg',
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          // Si también hay error con la imagen por defecto, mostrar placeholder
+          return _buildPlaceholder(hasError: true);
+        },
+      ),
+    );
   }
 
   Widget _buildPlaceholder({bool hasError = false}) {

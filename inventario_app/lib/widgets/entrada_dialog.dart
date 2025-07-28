@@ -45,7 +45,7 @@ class _EntradaDialogState extends State<EntradaDialog> {
     final sucursalProvider = context.read<SucursalesProvider>();
     final proveedorProvider = context.read<ProveedorProvider>();
 
-    print('🔄 EntradaDialog: Iniciando carga de datos...');
+ 
 
     try {
       await Future.wait([
@@ -54,20 +54,12 @@ class _EntradaDialogState extends State<EntradaDialog> {
         proveedorProvider.loadProveedores(),
       ]);
 
-      print('📊 EntradaDialog: Datos cargados');
-      print('📦 Productos cargados: ${productoProvider.productos.length}');
-      print('🏢 Sucursales cargadas: ${sucursalProvider.sucursales.length}');
-      print('🚚 Proveedores cargados: ${proveedorProvider.proveedores.length}');
-      print(
-        '🚚 Lista de proveedores: ${proveedorProvider.proveedores.map((p) => '${p.id}: ${p.nombre}').toList()}',
-      );
+  
 
       // Si hay errores, imprimirlos
-      if (proveedorProvider.error != null) {
-        print('❌ Error en proveedores: ${proveedorProvider.error}');
-      }
+   
     } catch (e) {
-      print('❌ Error general al cargar datos: $e');
+     //s
     }
 
     setState(() {
