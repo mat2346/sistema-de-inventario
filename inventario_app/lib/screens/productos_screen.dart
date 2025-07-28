@@ -113,28 +113,7 @@ class _ProductosScreenState extends State<ProductosScreen>
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Botón de prueba temporal para verificar el modal
-          FloatingActionButton(
-            heroTag: "test",
-            onPressed: () {
-              // Crear un producto de prueba para verificar el modal
-              final productoTest = Producto(
-                id: 999,
-                nombre: "Producto de Prueba",
-                descripcion: "Solo para probar el modal",
-              );
-              _showStockRegistrationModal(context, productoTest);
-            },
-            backgroundColor: Colors.orange,
-            child: const Icon(Icons.bug_report, size: 16),
-          ),
-          const SizedBox(height: 8),
-          _buildFloatingActionButton(),
-        ],
-      ),
+      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
