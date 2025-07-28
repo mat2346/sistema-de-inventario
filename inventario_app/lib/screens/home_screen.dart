@@ -4,7 +4,6 @@ import '../providers/auth_provider_jwt.dart';
 import '../theme/toyosaki_colors.dart';
 import 'productos_screen.dart';
 import 'categorias_screen.dart';
-import 'inventario_screen.dart';
 import 'entradas_screen.dart';
 import 'salidas_screen.dart';
 
@@ -377,13 +376,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'icon': Icons.category_outlined,
         'color': ToyosakiColors.accentGreen,
         'screen': const CategoriasScreen(),
-      },
-      {
-        'title': 'Stock',
-        'subtitle': 'Control de inventario',
-        'icon': Icons.assessment_outlined,
-        'color': ToyosakiColors.secondaryYellow,
-        'screen': const InventarioScreen(),
       },
       {
         'title': 'Entradas',
