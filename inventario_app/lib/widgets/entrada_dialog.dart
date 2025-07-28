@@ -468,18 +468,12 @@ class _EntradaDialogState extends State<EntradaDialog> {
         const SizedBox(height: 4),
         Consumer<ProveedorProvider>(
           builder: (context, provider, child) {
-            print('🔍 ProveedorDropdown: Builder ejecutándose');
-            print('🔍 Provider.isLoading: ${provider.isLoading}');
-            print('🔍 Provider.error: ${provider.error}');
-            print(
-              '🔍 Provider.proveedores.length: ${provider.proveedores.length}',
-            );
+            
 
             // Filtrar proveedores válidos
             final proveedoresValidos =
                 provider.proveedores.where((p) => p.id != null).toList();
 
-            print('🔍 Proveedores válidos: ${proveedoresValidos.length}');
 
             // Verificar si el proveedor seleccionado está en la lista
             final selectedProveedorValido =
