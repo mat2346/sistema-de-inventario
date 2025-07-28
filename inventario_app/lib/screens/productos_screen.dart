@@ -592,7 +592,10 @@ class _ProductosScreenState extends State<ProductosScreen>
             insetPadding: const EdgeInsets.all(16),
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.8,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.85,
+                minHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -608,7 +611,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                 children: [
                   // Header con imagen grande
                   Container(
-                    height: 250,
+                    height: 220,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.vertical(
@@ -628,8 +631,8 @@ class _ProductosScreenState extends State<ProductosScreen>
                         // Imagen del producto
                         Center(
                           child: Container(
-                            width: 200,
-                            height: 200,
+                            width: 170,
+                            height: 170,
                             margin: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -645,8 +648,8 @@ class _ProductosScreenState extends State<ProductosScreen>
                               borderRadius: BorderRadius.circular(12),
                               child: ProductImageWidget(
                                 producto: producto,
-                                width: 200,
-                                height: 200,
+                                width: 170,
+                                height: 170,
                               ),
                             ),
                           ),
@@ -688,7 +691,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                   // Contenido principal
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -702,7 +705,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                                     Text(
                                       producto.nombre,
                                       style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.w700,
                                         color: ToyosakiColors.primaryBlue,
                                       ),
@@ -840,7 +843,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                             ],
                           ),
 
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
 
                           // Descripción
                           if (producto.descripcion != null &&
@@ -848,33 +851,33 @@ class _ProductosScreenState extends State<ProductosScreen>
                             Text(
                               'Descripción',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: ToyosakiColors.primaryBlue,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 6),
                             Text(
                               producto.descripcion!,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.grey[700],
-                                height: 1.4,
+                                height: 1.3,
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 12),
                           ],
 
                           // Stock por sucursales
                           Text(
                             'Stock por Sucursales',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: ToyosakiColors.primaryBlue,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
 
                           Expanded(
                             child: Consumer<InventarioProvider>(
@@ -956,8 +959,8 @@ class _ProductosScreenState extends State<ProductosScreen>
                                   itemBuilder: (context, index) {
                                     final inventario = stockPorSucursal[index];
                                     return Container(
-                                      margin: const EdgeInsets.only(bottom: 8),
-                                      padding: const EdgeInsets.all(12),
+                                      margin: const EdgeInsets.only(bottom: 6),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8),
@@ -977,8 +980,8 @@ class _ProductosScreenState extends State<ProductosScreen>
                                       child: Row(
                                         children: [
                                           Container(
-                                            width: 40,
-                                            height: 40,
+                                            width: 36,
+                                            height: 36,
                                             decoration: BoxDecoration(
                                               color: ToyosakiColors.primaryBlue
                                                   .withOpacity(0.1),
@@ -988,10 +991,10 @@ class _ProductosScreenState extends State<ProductosScreen>
                                             child: Icon(
                                               Icons.store_outlined,
                                               color: ToyosakiColors.primaryBlue,
-                                              size: 20,
+                                              size: 18,
                                             ),
                                           ),
-                                          const SizedBox(width: 12),
+                                          const SizedBox(width: 10),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
@@ -1000,7 +1003,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                                                 Text(
                                                   inventario.sucursal.nombre,
                                                   style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 13,
                                                     fontWeight: FontWeight.w600,
                                                     color:
                                                         ToyosakiColors
@@ -1060,7 +1063,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                             ),
                           ),
 
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
 
                           // Botones de acción
                           Row(
