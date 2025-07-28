@@ -6,7 +6,6 @@ import '../providers/producto_provider.dart';
 import '../providers/sucursales_provider.dart';
 import '../providers/proveedor_provider.dart';
 import '../widgets/widgets.dart';
-import '../widgets/entrada_dialog.dart';
 import '../widgets/proveedor_dialog.dart';
 import '../mixins/crud_operations_mixin.dart';
 
@@ -36,7 +35,6 @@ class _EntradasScreenState extends State<EntradasScreen>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('🔄 EntradasScreen: Iniciando carga de datos...');
       context.read<EntradaProvider>().loadEntradas();
       context.read<ProductoProvider>().loadProductos();
       context.read<SucursalesProvider>().loadSucursales();

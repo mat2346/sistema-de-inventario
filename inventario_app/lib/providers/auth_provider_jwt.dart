@@ -18,20 +18,16 @@ class AuthProviderJWT extends ChangeNotifier {
 
   /// Inicializar el provider verificando si hay tokens guardados
   Future<void> initialize() async {
-    print('🚀 Inicializando AuthProviderJWT...');
     _setLoading(true);
 
     try {
       final hasTokens = await TokenStorage.hasTokens();
       if (hasTokens) {
-        print('🔑 Tokens encontrados, verificando sesión...');
         await checkCurrentSession();
       } else {
-        print('❌ No hay tokens guardados');
         _setAuthenticated(false);
       }
     } catch (e) {
-      print('❌ Error inicializando AuthProvider: $e');
       _setError('Error de inicialización');
     } finally {
       _setLoading(false);
@@ -40,7 +36,6 @@ class AuthProviderJWT extends ChangeNotifier {
 
   /// Login con JWT
   Future<bool> login(String nombre, String password) async {
-    print('🔐 Iniciando login para: $nombre');
     _setLoading(true);
     _setError(null);
 
@@ -50,15 +45,12 @@ class AuthProviderJWT extends ChangeNotifier {
       if (result['success']) {
         _currentEmpleado = result['empleado'];
         _setAuthenticated(true);
-        print('✅ Login exitoso para: ${_currentEmpleado?.nombre}');
         return true;
       } else {
         _setError(result['message']);
-        print('❌ Login fallido: ${result['message']}');
         return false;
       }
     } catch (e) {
-      print('❌ Error en login: $e');
       _setError('Error de conexión');
       return false;
     } finally {
@@ -68,7 +60,6 @@ class AuthProviderJWT extends ChangeNotifier {
 
   /// Logout con JWT
   Future<void> logout({bool clearSavedCredentials = false}) async {
-    print('🚪 Cerrando sesión...');
     _setLoading(true);
 
     try {
@@ -77,14 +68,11 @@ class AuthProviderJWT extends ChangeNotifier {
       // Limpiar credenciales guardadas si se solicita
       if (clearSavedCredentials) {
         await CredentialsStorage.clearCredentials();
-        print('🧹 Credenciales guardadas eliminadas');
       }
 
       _currentEmpleado = null;
       _setAuthenticated(false);
-      print('✅ Logout exitoso');
     } catch (e) {
-      print('❌ Error en logout: $e');
       // Aún así limpiar el estado local
       _currentEmpleado = null;
       _setAuthenticated(false);
@@ -95,22 +83,17 @@ class AuthProviderJWT extends ChangeNotifier {
 
   /// Verificar sesión actual
   Future<void> checkCurrentSession() async {
-    print('🔍 Verificando sesión actual...');
-
     try {
       final result = await AuthServiceJWT.checkSession();
 
       if (result['authenticated']) {
         _currentEmpleado = result['empleado'];
         _setAuthenticated(true);
-        print('✅ Sesión válida para: ${_currentEmpleado?.nombre}');
       } else {
         _currentEmpleado = null;
         _setAuthenticated(false);
-        print('❌ Sesión inválida: ${result['message']}');
       }
     } catch (e) {
-      print('❌ Error verificando sesión: $e');
       _currentEmpleado = null;
       _setAuthenticated(false);
     }

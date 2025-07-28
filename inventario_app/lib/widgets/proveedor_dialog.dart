@@ -57,7 +57,7 @@ class _ProveedorDialogState extends State<ProveedorDialog> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
+              color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.business, color: Colors.green, size: 16),
@@ -186,11 +186,11 @@ class _ProveedorDialogState extends State<ProveedorDialog> {
             prefixIcon: Icon(icon, color: Colors.green, size: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.green.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.green.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.green.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.green.withValues(alpha: 0.3)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

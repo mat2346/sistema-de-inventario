@@ -12,11 +12,8 @@ class JwtHeaders {
     final accessToken = await TokenStorage.getAccessToken();
     if (accessToken != null) {
       headers['Authorization'] = 'Bearer $accessToken';
-      print(
-        '🔑 JWT Header agregado: Bearer ${accessToken.substring(0, 20)}...',
-      );
     } else {
-      print('⚠️ No hay token JWT disponible');
+      headers['Authorization'] = 'Bearer ';
     }
 
     return headers;

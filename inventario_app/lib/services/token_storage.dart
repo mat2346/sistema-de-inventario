@@ -9,20 +9,15 @@ class TokenStorage {
     String accessToken,
     String refreshToken,
   ) async {
-    print('💾 TokenStorage.saveTokens() - Iniciando...');
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_accessTokenKey, accessToken);
     await prefs.setString(_refreshTokenKey, refreshToken);
-    print('💾 TokenStorage.saveTokens() - Tokens guardados');
   }
 
   // Obtener access token
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(_accessTokenKey);
-    print(
-      '🔍 TokenStorage.getAccessToken() - Token: ${token != null ? "ENCONTRADO" : "NO ENCONTRADO"}',
-    );
     return token;
   }
 
@@ -30,9 +25,6 @@ class TokenStorage {
   static Future<String?> getRefreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(_refreshTokenKey);
-    print(
-      '🔍 TokenStorage.getRefreshToken() - Token: ${token != null ? "ENCONTRADO" : "NO ENCONTRADO"}',
-    );
     return token;
   }
 

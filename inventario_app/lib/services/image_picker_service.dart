@@ -101,7 +101,6 @@ class ImagePickerService {
       // Verificar y solicitar permisos de cámara
       var cameraStatus = await Permission.camera.request();
       if (!cameraStatus.isGranted) {
-        debugPrint('❌ Permiso de cámara denegado');
         return null;
       }
 
@@ -113,12 +112,10 @@ class ImagePickerService {
       );
 
       if (image != null) {
-        debugPrint('✅ Imagen capturada desde cámara: ${image.path}');
       }
 
       return image;
     } catch (e) {
-      debugPrint('❌ Error al tomar foto: $e');
       return null;
     }
   }
@@ -132,7 +129,6 @@ class ImagePickerService {
         // Para Android, intentar con storage
         galleryStatus = await Permission.storage.request();
         if (!galleryStatus.isGranted) {
-          debugPrint('❌ Permiso de galería denegado');
           return null;
         }
       }
@@ -145,12 +141,10 @@ class ImagePickerService {
       );
 
       if (image != null) {
-        debugPrint('✅ Imagen seleccionada desde galería: ${image.path}');
       }
 
       return image;
     } catch (e) {
-      debugPrint('❌ Error al seleccionar imagen: $e');
       return null;
     }
   }
@@ -161,7 +155,6 @@ class ImagePickerService {
     XFile imageFile,
   ) async {
     try {
-      debugPrint('📤 Subiendo imagen para producto $productId...');
 
       var request = http.MultipartRequest(
         'POST',
@@ -184,12 +177,9 @@ class ImagePickerService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      debugPrint('📥 Response status: ${response.statusCode}');
-      debugPrint('📥 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        debugPrint('✅ Imagen subida exitosamente');
         return {
           'success': true,
           'data': data,
@@ -197,7 +187,6 @@ class ImagePickerService {
         };
       } else {
         final errorData = json.decode(response.body);
-        debugPrint('❌ Error al subir imagen: ${response.statusCode}');
         return {
           'success': false,
           'error': errorData['error'] ?? 'Error al subir imagen',
@@ -205,7 +194,6 @@ class ImagePickerService {
         };
       }
     } catch (e) {
-      debugPrint('❌ Exception al subir imagen: $e');
       return {'success': false, 'error': 'Error de conexión: ${e.toString()}'};
     }
   }
@@ -213,7 +201,6 @@ class ImagePickerService {
   /// Eliminar imagen de producto
   static Future<Map<String, dynamic>> deleteProductImage(int productId) async {
     try {
-      debugPrint('🗑️ Eliminando imagen del producto $productId...');
 
       final response = await http.delete(
         Uri.parse('${AppConfig.baseUrl}/productos/$productId/delete_image/'),
@@ -223,19 +210,15 @@ class ImagePickerService {
         },
       );
 
-      debugPrint('📥 Response status: ${response.statusCode}');
-      debugPrint('📥 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        debugPrint('✅ Imagen eliminada exitosamente');
         return {
           'success': true,
           'message': data['message'] ?? 'Imagen eliminada exitosamente',
         };
       } else {
         final errorData = json.decode(response.body);
-        debugPrint('❌ Error al eliminar imagen: ${response.statusCode}');
         return {
           'success': false,
           'error': errorData['error'] ?? 'Error al eliminar imagen',
@@ -243,7 +226,6 @@ class ImagePickerService {
         };
       }
     } catch (e) {
-      debugPrint('❌ Exception al eliminar imagen: $e');
       return {'success': false, 'error': 'Error de conexión: ${e.toString()}'};
     }
   }
@@ -262,7 +244,6 @@ class ImagePickerService {
       final bytes = await file.length();
       return bytes / (1024 * 1024); // Convertir a MB
     } catch (e) {
-      debugPrint('❌ Error al obtener tamaño de archivo: $e');
       return 0;
     }
   }

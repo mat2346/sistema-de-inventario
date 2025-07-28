@@ -14,14 +14,14 @@ class EntradaProvider with ChangeNotifier {
   String? get error => _error;
 
   Future<void> loadEntradas() async {
-    print('🔄 EntradaProvider: Iniciando carga de entradas...');
+   
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final url = '${ApiServiceJWT.baseUrl}/entradas/';
-      print('🔄 EntradaProvider: URL a llamar: $url');
+      
 
       final response = await http.get(
         Uri.parse(url),
@@ -31,13 +31,12 @@ class EntradaProvider with ChangeNotifier {
         },
       );
 
-      print('🔄 EntradaProvider: Status code: ${response.statusCode}');
-      print('🔄 EntradaProvider: Response body: ${response.body}');
+     
 
       if (response.statusCode == 200) {
         try {
           final dynamic responseData = json.decode(response.body);
-          print('📊 Datos de entradas recibidos: $responseData');
+         
 
           if (responseData is Map<String, dynamic>) {
             // Manejar respuesta paginada del backend Django Rest Framework
@@ -48,18 +47,15 @@ class EntradaProvider with ChangeNotifier {
                     try {
                       return Entrada.fromJson(json);
                     } catch (e) {
-                      print('❌ Error procesando entrada individual: $e');
-                      print('📋 Datos problemáticos: $json');
+                     
                       rethrow;
                     }
                   }).toList();
-              print(
-                '📊 Entradas procesadas desde respuesta paginada: ${_entradas.length}',
-              );
+            
             } else {
               // Si es un objeto individual
               _entradas = [Entrada.fromJson(responseData)];
-              print('📊 Entrada individual procesada');
+             
             }
           } else if (responseData is List) {
             // Si la respuesta es una lista directa
@@ -68,28 +64,25 @@ class EntradaProvider with ChangeNotifier {
                   try {
                     return Entrada.fromJson(json);
                   } catch (e) {
-                    print('❌ Error procesando entrada individual: $e');
-                    print('📋 Datos problemáticos: $json');
+                    
                     rethrow;
                   }
                 }).toList();
-            print(
-              '📊 Entradas procesadas desde lista directa: ${_entradas.length}',
-            );
+        
           } else {
-            print('❌ Formato de respuesta no reconocido para entradas');
+            
             _entradas = [];
           }
 
-          print('📋 Entradas finalmente cargadas: ${_entradas.length}');
+          
           _error = null;
         } catch (parseError) {
-          print('❌ Error detallado al procesar datos: $parseError');
+          
           _error = 'Error al procesar datos: $parseError';
           _entradas = [];
         }
       } else {
-        print('❌ Error HTTP: ${response.statusCode} - ${response.body}');
+      
         _error = 'Error al cargar entradas: ${response.statusCode}';
       }
     } catch (e) {

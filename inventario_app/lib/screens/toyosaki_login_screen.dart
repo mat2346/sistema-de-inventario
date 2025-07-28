@@ -59,7 +59,7 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
         });
       }
     } catch (e) {
-      print('Error cargando credenciales: $e');
+      //error
     }
   }
 
@@ -86,7 +86,7 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
         );
       }
     } catch (e) {
-      print('Error limpiando credenciales: $e');
+      //error
     }
   }
 

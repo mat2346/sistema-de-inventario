@@ -3,7 +3,6 @@ import '../widgets/app_snackbar.dart';
 import '../widgets/confirmation_dialog.dart';
 
 mixin CrudOperationsMixin<T extends StatefulWidget> on State<T> {
-  
   /// Ejecuta una operación CRUD y maneja los resultados
   Future<void> executeCrudOperation({
     required Future<bool> operation,
@@ -14,16 +13,16 @@ mixin CrudOperationsMixin<T extends StatefulWidget> on State<T> {
   }) async {
     try {
       final success = await operation;
-      
+
       if (success) {
-        AppSnackBar.showSuccess(context, successMessage);
+        if (mounted) AppSnackBar.showSuccess(context, successMessage);
         onSuccess?.call();
       } else {
-        AppSnackBar.showError(context, 'Error: $errorProvider');
+        if (mounted) AppSnackBar.showError(context, 'Error: $errorProvider');
         onError?.call();
       }
     } catch (e) {
-      AppSnackBar.showError(context, 'Error inesperado: $e');
+      if (mounted) AppSnackBar.showError(context, 'Error inesperado: $e');
       onError?.call();
     }
   }
@@ -52,10 +51,12 @@ mixin CrudOperationsMixin<T extends StatefulWidget> on State<T> {
   }) async {
     await executeCrudOperation(
       operation: operation,
-      successMessage: isUpdate 
-        ? '$itemType actualizado exitosamente'
-        : '$itemType creado exitosamente',
-      errorProvider: 'No se pudo ${isUpdate ? "actualizar" : "crear"} $itemType',
+      successMessage:
+          isUpdate
+              ? '$itemType actualizado exitosamente'
+              : '$itemType creado exitosamente',
+      errorProvider:
+          'No se pudo ${isUpdate ? "actualizar" : "crear"} $itemType',
       onSuccess: onSuccess,
     );
   }

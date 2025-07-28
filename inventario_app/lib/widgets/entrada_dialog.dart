@@ -104,25 +104,7 @@ class _EntradaDialogState extends State<EntradaDialog> {
         });
       }
 
-      // Debug info
-      print(
-        '🔍 Producto original: ${widget.entrada!.producto.nombre} (ID: ${widget.entrada!.producto.id})',
-      );
-      print(
-        '🔍 Producto encontrado: ${producto?.nombre} (ID: ${producto?.id})',
-      );
-      print(
-        '🔍 Sucursal original: ${widget.entrada!.sucursal.nombre} (ID: ${widget.entrada!.sucursal.id})',
-      );
-      print(
-        '🔍 Sucursal encontrada: ${sucursal?.nombre} (ID: ${sucursal?.id})',
-      );
-      print(
-        '🔍 Proveedor original: ${widget.entrada!.proveedor.nombre} (ID: ${widget.entrada!.proveedor.id})',
-      );
-      print(
-        '🔍 Proveedor encontrado: ${proveedor?.nombre} (ID: ${proveedor?.id})',
-      );
+      
     }
   }
 

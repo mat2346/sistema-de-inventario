@@ -5,7 +5,6 @@ import '../providers/salida_provider.dart';
 import '../providers/producto_provider.dart';
 import '../providers/sucursales_provider.dart';
 import '../widgets/widgets.dart';
-import '../widgets/salida_dialog.dart';
 import '../mixins/crud_operations_mixin.dart';
 
 class SalidasScreen extends StatefulWidget {

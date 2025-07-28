@@ -22,40 +22,33 @@ class Salida {
   });
 
   factory Salida.fromJson(Map<String, dynamic> json) {
-    print('🔍 Creating Salida from JSON: $json');
-
     // Procesar producto
     Producto producto;
     if (json['producto_detalle'] != null) {
       producto = Producto.fromJson(json['producto_detalle']);
-      print('✅ Producto from detalle: ${producto.nombre}');
     } else {
       // Si no hay detalle, crear un producto básico
       producto = Producto(
         id: json['producto'] ?? 0,
         nombre: 'Producto desconocido (ID: ${json['producto'] ?? 'N/A'})',
       );
-      print('⚠️ Producto sin detalle, ID: ${json['producto']}');
     }
 
     // Procesar sucursal
     Sucursal sucursal;
     if (json['sucursal_detalle'] != null) {
       sucursal = Sucursal.fromJson(json['sucursal_detalle']);
-      print('✅ Sucursal from detalle: ${sucursal.nombre}');
     } else {
       sucursal = Sucursal(
         id: json['sucursal'] ?? 0,
         nombre: 'Sucursal desconocida (ID: ${json['sucursal'] ?? 'N/A'})',
       );
-      print('⚠️ Sucursal sin detalle, ID: ${json['sucursal']}');
     }
 
     // Procesar empleado
     Empleado empleado;
     if (json['empleado_detalle'] != null) {
       empleado = Empleado.fromJson(json['empleado_detalle']);
-      print('✅ Empleado from detalle: ${empleado.nombreCompleto}');
     } else {
       empleado = Empleado(
         id: json['empleado'] ?? 0,
@@ -65,7 +58,6 @@ class Salida {
             'Empleado Desconocido (ID: ${json['empleado'] ?? 'N/A'})',
         cargo: 'Sin cargo',
       );
-      print('⚠️ Empleado sin detalle, ID: ${json['empleado']}');
     }
 
     return Salida(

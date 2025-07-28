@@ -879,17 +879,6 @@ class _ProductosScreenState extends State<ProductosScreen>
                           Expanded(
                             child: Consumer<InventarioProvider>(
                               builder: (context, inventarioProvider, child) {
-                                // Debug: mostrar todos los inventarios
-                                print(
-                                  'Total inventarios: ${inventarioProvider.inventarios.length}',
-                                );
-                                for (var inv
-                                    in inventarioProvider.inventarios) {
-                                  print(
-                                    'Inventario: Producto ID ${inv.producto.id}, Sucursal: ${inv.sucursal.nombre}, Cantidad: ${inv.cantidad}',
-                                  );
-                                }
-
                                 final stockPorSucursal =
                                     inventarioProvider.inventarios
                                         .where(
@@ -897,10 +886,6 @@ class _ProductosScreenState extends State<ProductosScreen>
                                               inv.producto.id == producto.id,
                                         )
                                         .toList();
-
-                                print(
-                                  'Stock filtrado para producto ${producto.id}: ${stockPorSucursal.length} registros',
-                                );
 
                                 if (stockPorSucursal.isEmpty) {
                                   return Container(
@@ -1622,27 +1607,17 @@ class _ProductosScreenState extends State<ProductosScreen>
                         try {
                           // Guardar o actualizar el producto
                           if (producto == null) {
-                            print(
-                              '🔄 Creando nuevo producto: ${nuevoProducto.nombre}',
-                            );
-
                             try {
                               // Crear nuevo producto
                               await provider.addProducto(nuevoProducto);
-                              print('✅ Producto creado exitosamente');
                             } catch (e) {
-                              print('❌ Error al crear producto: $e');
                               throw e;
                             }
 
                             try {
                               // Recargar productos para obtener el ID del nuevo producto
                               await provider.loadProductos();
-                              print(
-                                '🔄 Productos recargados, buscando producto creado...',
-                              );
                             } catch (e) {
-                              print('❌ Error al recargar productos: $e');
                               throw e;
                             }
 
@@ -1653,31 +1628,20 @@ class _ProductosScreenState extends State<ProductosScreen>
                                     )
                                     .lastOrNull;
 
-                            print(
-                              '🔍 Producto encontrado: ${productoRecienCreado?.id}',
-                            );
-
                             if (productoRecienCreado?.id != null) {
                               // Si hay una imagen seleccionada, subirla
                               if (selectedImageFile != null) {
-                                print('📸 Subiendo imagen...');
                                 try {
                                   await _uploadProductImage(
                                     productoRecienCreado!,
                                     selectedImageFile,
                                   );
                                 } catch (e) {
-                                  print('❌ Error al subir imagen: $e');
                                   // No detenemos el flujo por error de imagen
                                 }
                               }
 
-                              print('🔄 Cerrando diálogo de creación...');
                               Navigator.pop(context);
-
-                              print(
-                                '🎯 Llamando método directo para abrir modal...',
-                              );
 
                               // ✅ FLUJO AUTOMÁTICO: Llamada directa al modal después de cerrar el diálogo
                               _openStockModalAfterProductCreation(
@@ -1890,13 +1854,8 @@ class _ProductosScreenState extends State<ProductosScreen>
     BuildContext context,
     Producto producto,
   ) {
-    print(
-      '🚀 Método auxiliar: Abriendo modal de stock para producto ${producto.nombre}',
-    );
-
     // Verificar que el widget esté montado
     if (!mounted) {
-      print('❌ Widget no está montado, cancelando apertura de modal');
       return;
     }
 
@@ -1906,19 +1865,13 @@ class _ProductosScreenState extends State<ProductosScreen>
     // Pequeño delay para asegurar que la navegación se complete
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) {
-        print('⏰ Delay completado, abriendo modal...');
         _showStockRegistrationModal(scaffoldContext, producto);
-      } else {
-        print('❌ Widget ya no está montado después del delay');
       }
     });
   }
 
   // ✅ MODAL DE REGISTRO DE STOCK - Se abre después de crear un producto
   void _showStockRegistrationModal(BuildContext context, Producto producto) {
-    print(
-      '🚀 INICIANDO MODAL DE STOCK para producto: ${producto.nombre} (ID: ${producto.id})',
-    );
     showDialog(
       context: context,
       barrierDismissible: false, // No se puede cerrar tocando fuera

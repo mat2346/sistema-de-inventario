@@ -34,7 +34,6 @@ class ApiService {
       await TokenStorage.clearTokens();
       return false;
     } catch (e) {
-      print('Error refreshing token: $e');
       await TokenStorage.clearTokens();
       return false;
     }
@@ -57,14 +56,11 @@ class ApiService {
 
   static Future<http.Response> get(String endpoint) async {
     final url = Uri.parse('$baseUrl$endpoint');
-    print('GET: $url'); // Para debug
 
     try {
       final headers = await _getHeaders();
       final response = await http.get(url, headers: headers);
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
 
       // Verificar si el token expiró
       if (response.statusCode == 401) {
@@ -73,14 +69,12 @@ class ApiService {
           // Reintentar con el nuevo token
           final newHeaders = await _getHeaders();
           final retryResponse = await http.get(url, headers: newHeaders);
-          print('Retry response status: ${retryResponse.statusCode}');
           return retryResponse;
         }
       }
 
       return response;
     } catch (e) {
-      print('Error en GET $url: $e');
       rethrow;
     }
   }
@@ -90,8 +84,6 @@ class ApiService {
     Map<String, dynamic> data,
   ) async {
     final url = Uri.parse('$baseUrl$endpoint');
-    print('POST: $url');
-    print('Data: ${json.encode(data)}');
 
     try {
       final headers = await _getHeaders();
@@ -101,8 +93,6 @@ class ApiService {
         body: json.encode(data),
       );
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
 
       // Verificar si el token expiró
       if (response.statusCode == 401) {
@@ -115,14 +105,12 @@ class ApiService {
             headers: newHeaders,
             body: json.encode(data),
           );
-          print('Retry response status: ${retryResponse.statusCode}');
           return retryResponse;
         }
       }
 
       return response;
     } catch (e) {
-      print('Error en POST $url: $e');
       rethrow;
     }
   }
@@ -132,7 +120,6 @@ class ApiService {
     Map<String, dynamic> data,
   ) async {
     final url = Uri.parse('$baseUrl$endpoint');
-    print('PUT: $url');
 
     try {
       final headers = await _getHeaders();
@@ -142,7 +129,6 @@ class ApiService {
         body: json.encode(data),
       );
 
-      print('Response status: ${response.statusCode}');
 
       // Verificar si el token expiró
       if (response.statusCode == 401) {
@@ -154,27 +140,23 @@ class ApiService {
             headers: newHeaders,
             body: json.encode(data),
           );
-          print('Retry response status: ${retryResponse.statusCode}');
           return retryResponse;
         }
       }
 
       return response;
     } catch (e) {
-      print('Error en PUT $url: $e');
       rethrow;
     }
   }
 
   static Future<http.Response> delete(String endpoint) async {
     final url = Uri.parse('$baseUrl$endpoint');
-    print('DELETE: $url');
 
     try {
       final headers = await _getHeaders();
       final response = await http.delete(url, headers: headers);
 
-      print('Response status: ${response.statusCode}');
 
       // Verificar si el token expiró
       if (response.statusCode == 401) {
@@ -182,14 +164,12 @@ class ApiService {
         if (refreshed) {
           final newHeaders = await _getHeaders();
           final retryResponse = await http.delete(url, headers: newHeaders);
-          print('Retry response status: ${retryResponse.statusCode}');
           return retryResponse;
         }
       }
 
       return response;
     } catch (e) {
-      print('Error en DELETE $url: $e');
       rethrow;
     }
   }
@@ -199,7 +179,6 @@ class ApiService {
     Map<String, dynamic> data,
   ) async {
     final url = Uri.parse('$baseUrl$endpoint');
-    print('PATCH: $url');
 
     try {
       final headers = await _getHeaders();
@@ -209,7 +188,6 @@ class ApiService {
         body: json.encode(data),
       );
 
-      print('Response status: ${response.statusCode}');
 
       // Verificar si el token expiró
       if (response.statusCode == 401) {
@@ -221,14 +199,12 @@ class ApiService {
             headers: newHeaders,
             body: json.encode(data),
           );
-          print('Retry response status: ${retryResponse.statusCode}');
           return retryResponse;
         }
       }
 
       return response;
     } catch (e) {
-      print('Error en PATCH $url: $e');
       rethrow;
     }
   }
@@ -272,7 +248,6 @@ class ApiService {
         );
       }
     } catch (e) {
-      print('Error en handleListRequest: $e');
       throw Exception('Error de conexión: $e');
     }
   }
@@ -293,7 +268,6 @@ class ApiService {
         );
       }
     } catch (e) {
-      print('Error en handleRequest: $e');
       throw Exception('Error de conexión: $e');
     }
   }

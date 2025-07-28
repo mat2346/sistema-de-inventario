@@ -66,19 +66,7 @@ class _SalidaDialogState extends State<SalidaDialog> {
         });
       }
 
-      // Debug info
-      print(
-        '🔍 Producto original: ${widget.salida!.producto.nombre} (ID: ${widget.salida!.producto.id})',
-      );
-      print(
-        '🔍 Producto encontrado: ${producto?.nombre} (ID: ${producto?.id})',
-      );
-      print(
-        '🔍 Sucursal original: ${widget.salida!.sucursal.nombre} (ID: ${widget.salida!.sucursal.id})',
-      );
-      print(
-        '🔍 Sucursal encontrada: ${sucursal?.nombre} (ID: ${sucursal?.id})',
-      );
+    
     }
   }
 
@@ -241,11 +229,11 @@ class _SalidaDialogState extends State<SalidaDialog> {
                 hintText: 'Seleccionar producto',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -320,11 +308,11 @@ class _SalidaDialogState extends State<SalidaDialog> {
                 hintText: 'Seleccionar sucursal',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -385,11 +373,11 @@ class _SalidaDialogState extends State<SalidaDialog> {
             hintText: 'Ingrese la cantidad',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -435,11 +423,11 @@ class _SalidaDialogState extends State<SalidaDialog> {
             hintText: 'Motivo de la salida (opcional)',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

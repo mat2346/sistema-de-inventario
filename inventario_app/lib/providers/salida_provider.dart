@@ -19,7 +19,6 @@ class SalidaProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('🔄 Cargando salidas desde: ${ApiServiceJWT.baseUrl}/salidas/');
       final response = await http.get(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
         headers: {
@@ -28,55 +27,41 @@ class SalidaProvider with ChangeNotifier {
         },
       );
 
-      print('📊 Response status: ${response.statusCode}');
-      print('📊 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         try {
           final dynamic responseData = json.decode(response.body);
-          print('📊 Decoded data type: ${responseData.runtimeType}');
 
           if (responseData is List) {
-            print('📊 Processing ${responseData.length} salidas...');
             _salidas =
                 responseData.map((json) {
-                  print('🔍 Processing salida: $json');
                   return Salida.fromJson(json);
                 }).toList();
           } else if (responseData is Map<String, dynamic>) {
             // Si la respuesta es un objeto con resultados paginados
             if (responseData.containsKey('results')) {
               final results = responseData['results'] as List;
-              print(
-                '📊 Processing ${results.length} salidas from paginated response...',
-              );
+             
               _salidas =
                   results.map((json) {
-                    print('🔍 Processing salida: $json');
                     return Salida.fromJson(json);
                   }).toList();
             } else {
               // Si la respuesta es un objeto individual
-              print('📊 Processing single salida object...');
               _salidas = [Salida.fromJson(responseData)];
             }
           } else {
-            print('⚠️ Unexpected response format');
             _salidas = [];
           }
-          print('✅ Salidas cargadas: ${_salidas.length}');
           _error = null;
         } catch (parseError) {
-          print('❌ Error al procesar datos: $parseError');
           _error = 'Error al procesar datos: $parseError';
           _salidas = [];
         }
       } else {
-        print('❌ Error HTTP: ${response.statusCode}');
         _error = 'Error al cargar salidas: ${response.statusCode}';
       }
     } catch (e) {
-      print('❌ Error de conexión: $e');
       _error = 'Error de conexión: $e';
     } finally {
       _isLoading = false;

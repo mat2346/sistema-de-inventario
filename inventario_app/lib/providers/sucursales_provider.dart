@@ -17,12 +17,9 @@ class SucursalesProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('Cargando sucursales...');
       _sucursales = await SucursalService.getSucursales();
-      print('Sucursales cargadas: ${_sucursales.length}');
       _error = null;
     } catch (e) {
-      print('Error cargando sucursales: $e');
       _error = e.toString();
       _sucursales = [];
     } finally {
@@ -41,7 +38,6 @@ class SucursalesProvider with ChangeNotifier {
       _error = null;
       return true;
     } catch (e) {
-      print('Error agregando sucursal: $e');
       _error = e.toString();
       return false;
     } finally {
@@ -63,7 +59,6 @@ class SucursalesProvider with ChangeNotifier {
       _error = null;
       return true;
     } catch (e) {
-      print('Error actualizando sucursal: $e');
       _error = e.toString();
       return false;
     } finally {
@@ -87,7 +82,6 @@ class SucursalesProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error eliminando sucursal: $e');
       _error = e.toString();
       return false;
     } finally {

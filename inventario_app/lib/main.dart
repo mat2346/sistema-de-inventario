@@ -66,7 +66,7 @@ class InventarioApp extends StatelessWidget {
             foregroundColor: Colors.white,
             elevation: 4,
             centerTitle: true,
-            shadowColor: Color(0xFF1565C0).withOpacity(0.5),
+            shadowColor: Color(0xFF1565C0).withValues(alpha: 0.5),
             titleTextStyle: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -80,7 +80,7 @@ class InventarioApp extends StatelessWidget {
               backgroundColor: Color(0xFF1565C0),
               foregroundColor: Colors.white,
               elevation: 6,
-              shadowColor: Color(0xFF1565C0).withOpacity(0.4),
+              shadowColor: Color(0xFF1565C0).withValues(alpha: 0.4),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -90,12 +90,12 @@ class InventarioApp extends StatelessWidget {
           // Cards personalizadas con sombras
           cardTheme: CardTheme(
             elevation: 8,
-            shadowColor: Colors.black.withOpacity(0.15),
+            shadowColor: Colors.black.withValues(alpha: 0.15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             color: Colors.white,
-            surfaceTintColor: Color(0xFF1565C0).withOpacity(0.05),
+            surfaceTintColor: Color(0xFF1565C0).withValues(alpha: 0.05),
           ),
           // Input decorations mejorados
           inputDecorationTheme: InputDecorationTheme(
@@ -103,11 +103,15 @@ class InventarioApp extends StatelessWidget {
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFF1565C0).withOpacity(0.3)),
+              borderSide: BorderSide(
+                color: Color(0xFF1565C0).withValues(alpha: 0.3),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFF1565C0).withOpacity(0.3)),
+              borderSide: BorderSide(
+                color: Color(0xFF1565C0).withValues(alpha: 0.3),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

@@ -13,8 +13,6 @@ class AuthServiceJWT {
     String password,
   ) async {
     try {
-      print('🔐 Iniciando login JWT para: $nombre');
-
       final response = await http.post(
         Uri.parse('$baseUrl/auth/login/'),
         headers: {
@@ -24,45 +22,15 @@ class AuthServiceJWT {
         body: json.encode({'nombre': nombre, 'password': password}),
       );
 
-      print('📊 Login response status: ${response.statusCode}');
-      print('📄 Login response body: ${response.body}');
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        print('🔍 Debug - authenticated: ${data['authenticated']}');
-        print(
-          '🔍 Debug - authenticated type: ${data['authenticated'].runtimeType}',
-        );
-        print(
-          '🔍 Debug - tokens: ${data['tokens'] != null ? "EXISTS" : "NULL"}',
-        );
-
         if (data['authenticated'] == true && data['tokens'] != null) {
           // Guardar tokens JWT
-          print('💾 Guardando tokens en TokenStorage...');
-          print(
-            '💾 Access Token: ${data['tokens']['access'].substring(0, 50)}...',
-          );
-          print(
-            '💾 Refresh Token: ${data['tokens']['refresh'].substring(0, 50)}...',
-          );
 
           await TokenStorage.saveTokens(
             data['tokens']['access'],
             data['tokens']['refresh'],
-          );
-
-          print('✅ Tokens guardados exitosamente');
-
-          // Verificar que se guardaron correctamente
-          final savedAccess = await TokenStorage.getAccessToken();
-          final savedRefresh = await TokenStorage.getRefreshToken();
-          print(
-            '🔍 Verificación - Access guardado: ${savedAccess != null ? "SÍ" : "NO"}',
-          );
-          print(
-            '🔍 Verificación - Refresh guardado: ${savedRefresh != null ? "SÍ" : "NO"}',
           );
 
           // Crear empleado desde la respuesta
@@ -75,9 +43,6 @@ class AuthServiceJWT {
             'tokens': data['tokens'],
           };
         } else {
-          print(
-            '❌ Condición fallida - authenticated: ${data['authenticated']}, tokens: ${data['tokens']}',
-          );
           return {
             'success': false,
             'message': data['message'] ?? 'Error de autenticación',
@@ -91,7 +56,6 @@ class AuthServiceJWT {
         };
       }
     } catch (e) {
-      print('❌ Error en login: $e');
       return {
         'success': false,
         'message': 'Error de conexión: ${e.toString()}',
@@ -102,8 +66,6 @@ class AuthServiceJWT {
   /// Logout con JWT
   static Future<Map<String, dynamic>> logout() async {
     try {
-      print('🚪 Iniciando logout JWT');
-
       final refreshToken = await TokenStorage.getRefreshToken();
 
       if (refreshToken != null) {
@@ -117,7 +79,10 @@ class AuthServiceJWT {
           body: json.encode({'refresh_token': refreshToken}),
         );
 
-        print('📊 Logout response status: ${response.statusCode}');
+        if (response.statusCode == 200) {
+          await TokenStorage.clearTokens();
+          return {'success': true, 'message': 'Sesión cerrada exitosamente'};
+        }
       }
 
       // Limpiar tokens locales independientemente de la respuesta del servidor
@@ -125,7 +90,6 @@ class AuthServiceJWT {
 
       return {'success': true, 'message': 'Sesión cerrada exitosamente'};
     } catch (e) {
-      print('❌ Error en logout: $e');
       // Aún así limpiar tokens locales
       await TokenStorage.clearTokens();
       return {'success': true, 'message': 'Sesión cerrada localmente'};
@@ -135,8 +99,6 @@ class AuthServiceJWT {
   /// Verificar sesión actual con JWT
   static Future<Map<String, dynamic>> checkSession() async {
     try {
-      print('🔍 Verificando sesión JWT');
-
       final accessToken = await TokenStorage.getAccessToken();
       if (accessToken == null) {
         return {'authenticated': false, 'message': 'No hay token de acceso'};
@@ -151,8 +113,6 @@ class AuthServiceJWT {
         },
       );
 
-      print('📊 Session check response status: ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
@@ -166,7 +126,6 @@ class AuthServiceJWT {
         }
       } else if (response.statusCode == 401) {
         // Token expirado, intentar refrescar
-        print('🔄 Token expirado, intentando refrescar...');
         final refreshSuccess = await _refreshToken();
         if (refreshSuccess) {
           // Reintentar verificación de sesión
@@ -182,7 +141,6 @@ class AuthServiceJWT {
 
       return {'authenticated': false, 'message': 'Sesión inválida'};
     } catch (e) {
-      print('❌ Error verificando sesión: $e');
       return {
         'authenticated': false,
         'message': 'Error de conexión: ${e.toString()}',
@@ -196,8 +154,6 @@ class AuthServiceJWT {
       final refreshToken = await TokenStorage.getRefreshToken();
       if (refreshToken == null) return false;
 
-      print('🔄 Refrescando token JWT...');
-
       final response = await http.post(
         Uri.parse('$baseUrl/auth/refresh/'),
         headers: {
@@ -207,22 +163,17 @@ class AuthServiceJWT {
         body: json.encode({'refresh': refreshToken}),
       );
 
-      print('📊 Refresh response status: ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         await TokenStorage.saveTokens(
           data['access'],
           data['refresh'] ?? refreshToken,
         );
-        print('✅ Token refrescado exitosamente');
         return true;
       } else {
-        print('❌ Error al refrescar token: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('❌ Error en refresh token: $e');
       return false;
     }
   }
