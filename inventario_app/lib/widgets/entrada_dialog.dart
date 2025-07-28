@@ -8,7 +8,7 @@ import '../providers/entrada_provider.dart';
 import '../providers/producto_provider.dart';
 import '../providers/sucursales_provider.dart';
 import '../providers/proveedor_provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider_jwt.dart';
 import 'proveedor_dialog.dart';
 
 class EntradaDialog extends StatefulWidget {
@@ -167,7 +167,7 @@ class _EntradaDialogState extends State<EntradaDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Información del empleado que registra
-                Consumer<AuthProvider>(
+                Consumer<AuthProviderJWT>(
                   builder: (context, authProvider, child) {
                     return Container(
                       padding: const EdgeInsets.all(12),
@@ -764,7 +764,7 @@ class _EntradaDialogState extends State<EntradaDialog> {
     setState(() => _isLoading = true);
 
     try {
-      final authProvider = context.read<AuthProvider>();
+      final authProvider = context.read<AuthProviderJWT>();
       final entradaProvider = context.read<EntradaProvider>();
 
       final entradaData = Entrada(

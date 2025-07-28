@@ -399,13 +399,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'color': Colors.red,
         'screen': const SalidasScreen(),
       },
-      {
-        'title': 'Reportes',
-        'subtitle': 'Análisis y estadísticas',
-        'icon': Icons.analytics_outlined,
-        'color': ToyosakiColors.motorParts,
-        'screen': null,
-      },
     ];
 
     return GridView.builder(
@@ -426,24 +419,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           icon: item['icon'] as IconData,
           color: item['color'] as Color,
           onTap: () {
-            final screen = item['screen'] as Widget?;
-            if (screen != null) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => screen),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${item['title']} - Próximamente disponible'),
-                  backgroundColor: ToyosakiColors.primaryBlue,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
-            }
+            final screen = item['screen'] as Widget;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => screen),
+            );
           },
         );
       },

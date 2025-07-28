@@ -6,7 +6,7 @@ import '../models/sucursal.dart';
 import '../providers/salida_provider.dart';
 import '../providers/producto_provider.dart';
 import '../providers/sucursales_provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider_jwt.dart';
 
 class SalidaDialog extends StatefulWidget {
   final Salida? salida;
@@ -124,7 +124,7 @@ class _SalidaDialogState extends State<SalidaDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Información del empleado que registra
-                Consumer<AuthProvider>(
+                Consumer<AuthProviderJWT>(
                   builder: (context, authProvider, child) {
                     return Container(
                       padding: const EdgeInsets.all(12),
@@ -461,7 +461,7 @@ class _SalidaDialogState extends State<SalidaDialog> {
     setState(() => _isLoading = true);
 
     try {
-      final authProvider = context.read<AuthProvider>();
+      final authProvider = context.read<AuthProviderJWT>();
       final salidaProvider = context.read<SalidaProvider>();
 
       final salidaData = Salida(
