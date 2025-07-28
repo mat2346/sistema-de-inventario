@@ -252,6 +252,30 @@ class _ProductosScreenState extends State<ProductosScreen>
           Consumer<ProductoProvider>(
             builder: (context, provider, child) {
               final products = provider.productos;
+
+              // Calcular productos con precios
+              final productsWithPrices =
+                  products
+                      .where(
+                        (p) => p.precioCompra != null && p.precioVenta != null,
+                      )
+                      .toList();
+
+              // Calcular margen promedio
+              double avgMargin = 0;
+              if (productsWithPrices.isNotEmpty) {
+                final totalMargin = productsWithPrices.fold<double>(0, (
+                  sum,
+                  p,
+                ) {
+                  return sum +
+                      ((p.precioVenta! - p.precioCompra!) /
+                          p.precioCompra! *
+                          100);
+                });
+                avgMargin = totalMargin / productsWithPrices.length;
+              }
+
               return Row(
                 children: [
                   Expanded(
@@ -265,19 +289,19 @@ class _ProductosScreenState extends State<ProductosScreen>
                   const SizedBox(width: 6),
                   Expanded(
                     child: _buildCompactStat(
-                      'Stock Bajo',
-                      '${(products.length * 0.2).round()}',
-                      Icons.warning_outlined,
-                      Colors.orange,
+                      'Con Precios',
+                      '${productsWithPrices.length}',
+                      Icons.attach_money,
+                      Colors.green,
                     ),
                   ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: _buildCompactStat(
-                      'Sin Stock',
-                      '${(products.length * 0.1).round()}',
-                      Icons.error_outline,
-                      Colors.red,
+                      'Margen Prom.',
+                      '${avgMargin.toStringAsFixed(1)}%',
+                      Icons.trending_up,
+                      Colors.orange,
                     ),
                   ),
                 ],
@@ -401,6 +425,43 @@ class _ProductosScreenState extends State<ProductosScreen>
                       const SizedBox(height: 4),
                       Row(
                         children: [
+                          // Precio de compra
+                          if (producto.precioCompra != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 8,
+                                    color: Colors.orange[700],
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    '\$${producto.precioCompra!.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.orange[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          if (producto.precioCompra != null &&
+                              producto.precioVenta != null)
+                            const SizedBox(width: 4),
+
+                          // Precio de venta
                           if (producto.precioVenta != null)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -412,13 +473,24 @@ class _ProductosScreenState extends State<ProductosScreen>
                                     .withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(3),
                               ),
-                              child: Text(
-                                '\$${producto.precioVenta!.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w600,
-                                  color: ToyosakiColors.primaryBlue,
-                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.attach_money,
+                                    size: 8,
+                                    color: ToyosakiColors.primaryBlue,
+                                  ),
+                                  const SizedBox(width: 1),
+                                  Text(
+                                    '\$${producto.precioVenta!.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: ToyosakiColors.primaryBlue,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           const SizedBox(width: 4),
@@ -663,26 +735,108 @@ class _ProductosScreenState extends State<ProductosScreen>
                                 ),
                               ),
 
-                              // Precio
-                              if (producto.precioVenta != null)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: ToyosakiColors.primaryBlue,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '\$${producto.precioVenta!.toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
+                              // Precios
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  // Precio de venta
+                                  if (producto.precioVenta != null)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: ToyosakiColors.primaryBlue,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            'Precio Venta',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white.withOpacity(
+                                                0.8,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '\$${producto.precioVenta!.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+
+                                  if (producto.precioCompra != null &&
+                                      producto.precioVenta != null)
+                                    const SizedBox(height: 8),
+
+                                  // Precio de compra
+                                  if (producto.precioCompra != null)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                          color: Colors.orange,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            'Precio Compra',
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              color: Colors.orange[700],
+                                            ),
+                                          ),
+                                          Text(
+                                            '\$${producto.precioCompra!.toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.orange[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                  // Margen de ganancia
+                                  if (producto.precioCompra != null &&
+                                      producto.precioVenta != null)
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        'Margen: ${((producto.precioVenta! - producto.precioCompra!) / producto.precioCompra! * 100).toStringAsFixed(1)}%',
+                                        style: TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.green[700],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ],
                           ),
 
@@ -1109,6 +1263,12 @@ class _ProductosScreenState extends State<ProductosScreen>
     final descripcionController = TextEditingController(
       text: producto?.descripcion ?? '',
     );
+    final precioCompraController = TextEditingController(
+      text: producto?.precioCompra?.toStringAsFixed(2) ?? '',
+    );
+    final precioVentaController = TextEditingController(
+      text: producto?.precioVenta?.toStringAsFixed(2) ?? '',
+    );
 
     // Variable para manejar la imagen seleccionada al crear un nuevo producto
     dynamic selectedImageFile;
@@ -1146,6 +1306,30 @@ class _ProductosScreenState extends State<ProductosScreen>
                             label: 'Descripción',
                             icon: Icons.description_outlined,
                             maxLines: 2,
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Campos de precios
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildDialogTextField(
+                                  controller: precioCompraController,
+                                  label: 'Precio Compra',
+                                  icon: Icons.shopping_cart_outlined,
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildDialogTextField(
+                                  controller: precioVentaController,
+                                  label: 'Precio Venta',
+                                  icon: Icons.attach_money,
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 12),
 
@@ -1374,6 +1558,54 @@ class _ProductosScreenState extends State<ProductosScreen>
                           return;
                         }
 
+                        // Parsear precios
+                        double? precioCompra;
+                        double? precioVenta;
+
+                        if (precioCompraController.text.trim().isNotEmpty) {
+                          try {
+                            precioCompra = double.parse(
+                              precioCompraController.text.trim(),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  'El precio de compra debe ser un número válido',
+                                ),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                        }
+
+                        if (precioVentaController.text.trim().isNotEmpty) {
+                          try {
+                            precioVenta = double.parse(
+                              precioVentaController.text.trim(),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  'El precio de venta debe ser un número válido',
+                                ),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                        }
+
                         final nuevoProducto = Producto(
                           id: producto?.id,
                           nombre: nombreController.text.trim(),
@@ -1381,6 +1613,8 @@ class _ProductosScreenState extends State<ProductosScreen>
                               descripcionController.text.trim().isEmpty
                                   ? null
                                   : descripcionController.text.trim(),
+                          precioCompra: precioCompra,
+                          precioVenta: precioVenta,
                         );
 
                         final provider = context.read<ProductoProvider>();
@@ -1525,6 +1759,7 @@ class _ProductosScreenState extends State<ProductosScreen>
     required String label,
     required IconData icon,
     int maxLines = 1,
+    TextInputType? keyboardType,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -1535,6 +1770,7 @@ class _ProductosScreenState extends State<ProductosScreen>
       child: TextField(
         controller: controller,
         maxLines: maxLines,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey[600], fontSize: 12),
