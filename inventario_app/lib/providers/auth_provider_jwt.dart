@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/empleado.dart';
 import '../services/auth_service_jwt.dart';
 import '../services/token_storage.dart';
+import '../services/credentials_storage.dart';
 
 class AuthProviderJWT extends ChangeNotifier {
   Empleado? _currentEmpleado;
@@ -66,12 +67,19 @@ class AuthProviderJWT extends ChangeNotifier {
   }
 
   /// Logout con JWT
-  Future<void> logout() async {
+  Future<void> logout({bool clearSavedCredentials = false}) async {
     print('🚪 Cerrando sesión...');
     _setLoading(true);
 
     try {
       await AuthServiceJWT.logout();
+
+      // Limpiar credenciales guardadas si se solicita
+      if (clearSavedCredentials) {
+        await CredentialsStorage.clearCredentials();
+        print('🧹 Credenciales guardadas eliminadas');
+      }
+
       _currentEmpleado = null;
       _setAuthenticated(false);
       print('✅ Logout exitoso');

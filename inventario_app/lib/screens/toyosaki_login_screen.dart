@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider_jwt.dart';
 import '../theme/toyosaki_colors.dart';
+import '../services/credentials_storage.dart';
 
 class ToyosakiLoginScreen extends StatefulWidget {
   const ToyosakiLoginScreen({super.key});
@@ -17,6 +18,7 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _rememberCredentials = false;
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -42,6 +44,50 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
     );
 
     _animationController.forward();
+    _loadSavedCredentials();
+  }
+
+  /// Cargar credenciales guardadas al inicializar
+  Future<void> _loadSavedCredentials() async {
+    try {
+      final credentials = await CredentialsStorage.getSavedCredentials();
+      if (mounted) {
+        setState(() {
+          _nombreController.text = credentials['username'] ?? '';
+          _passwordController.text = credentials['password'] ?? '';
+          _rememberCredentials = credentials['remember'] ?? false;
+        });
+      }
+    } catch (e) {
+      print('Error cargando credenciales: $e');
+    }
+  }
+
+  /// Limpiar credenciales guardadas
+  Future<void> _clearSavedCredentials() async {
+    try {
+      await CredentialsStorage.clearCredentials();
+      if (mounted) {
+        setState(() {
+          _nombreController.clear();
+          _passwordController.clear();
+          _rememberCredentials = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Credenciales guardadas eliminadas'),
+            backgroundColor: Colors.orange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error limpiando credenciales: $e');
+    }
   }
 
   @override
@@ -64,6 +110,13 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
       await authProvider.login(
         _nombreController.text,
         _passwordController.text,
+      );
+
+      // Guardar credenciales si el login fue exitoso
+      await CredentialsStorage.saveCredentials(
+        username: _nombreController.text,
+        password: _passwordController.text,
+        remember: _rememberCredentials,
       );
 
       if (mounted) {
@@ -131,7 +184,7 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
           ),
         ),
       ),
-    ); 
+    );
   }
 
   Widget _buildHeader() {
@@ -198,6 +251,39 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
             color: Colors.grey[600],
           ),
         ),
+
+        // Indicador de credenciales guardadas
+        if (_nombreController.text.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: ToyosakiColors.accentGreen.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: ToyosakiColors.accentGreen.withOpacity(0.3),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.person_outline,
+                  color: ToyosakiColors.accentGreen,
+                  size: 14,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Credenciales guardadas',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: ToyosakiColors.accentGreen,
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -249,6 +335,10 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
                 return null;
               },
             ),
+            const SizedBox(height: 20),
+
+            // Checkbox para recordar credenciales
+            _buildRememberCheckbox(),
             const SizedBox(height: 32),
 
             // Botón de login
@@ -333,6 +423,73 @@ class _ToyosakiLoginScreenState extends State<ToyosakiLoginScreen>
             validator: validator,
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildRememberCheckbox() {
+    return Row(
+      children: [
+        Transform.scale(
+          scale: 1.1,
+          child: Checkbox(
+            value: _rememberCredentials,
+            onChanged: (value) {
+              setState(() {
+                _rememberCredentials = value ?? false;
+              });
+            },
+            activeColor: ToyosakiColors.primaryBlue,
+            checkColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'Recordar mis credenciales',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: ToyosakiColors.primaryBlue,
+            ),
+          ),
+        ),
+        if (_rememberCredentials)
+          Icon(
+            Icons.security_outlined,
+            color: ToyosakiColors.accentGreen,
+            size: 18,
+          ),
+        if (_nombreController.text.isNotEmpty &&
+            _passwordController.text.isNotEmpty)
+          GestureDetector(
+            onTap: _clearSavedCredentials,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.clear, color: Colors.red, size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Limpiar',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
