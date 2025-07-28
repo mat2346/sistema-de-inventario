@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/entrada.dart';
 import '../services/api_service_jwt.dart';
+import '../services/jwt_headers.dart';
 
 class EntradaProvider with ChangeNotifier {
   List<Entrada> _entradas = [];
@@ -14,29 +15,19 @@ class EntradaProvider with ChangeNotifier {
   String? get error => _error;
 
   Future<void> loadEntradas() async {
-   
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final url = '${ApiServiceJWT.baseUrl}/entradas/';
-      
+      final headers = await JwtHeaders.getHeaders();
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-
-     
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       if (response.statusCode == 200) {
         try {
           final dynamic responseData = json.decode(response.body);
-         
 
           if (responseData is Map<String, dynamic>) {
             // Manejar respuesta paginada del backend Django Rest Framework
@@ -47,15 +38,12 @@ class EntradaProvider with ChangeNotifier {
                     try {
                       return Entrada.fromJson(json);
                     } catch (e) {
-                     
                       rethrow;
                     }
                   }).toList();
-            
             } else {
               // Si es un objeto individual
               _entradas = [Entrada.fromJson(responseData)];
-             
             }
           } else if (responseData is List) {
             // Si la respuesta es una lista directa
@@ -64,25 +52,19 @@ class EntradaProvider with ChangeNotifier {
                   try {
                     return Entrada.fromJson(json);
                   } catch (e) {
-                    
                     rethrow;
                   }
                 }).toList();
-        
           } else {
-            
             _entradas = [];
           }
 
-          
           _error = null;
         } catch (parseError) {
-          
           _error = 'Error al procesar datos: $parseError';
           _entradas = [];
         }
       } else {
-      
         _error = 'Error al cargar entradas: ${response.statusCode}';
       }
     } catch (e) {
@@ -95,12 +77,10 @@ class EntradaProvider with ChangeNotifier {
 
   Future<void> addEntrada(Entrada entrada) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.post(
         Uri.parse('${ApiServiceJWT.baseUrl}/entradas/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
         body: json.encode(entrada.toJson()),
       );
 
@@ -118,12 +98,10 @@ class EntradaProvider with ChangeNotifier {
 
   Future<void> updateEntrada(int id, Entrada entrada) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.put(
         Uri.parse('${ApiServiceJWT.baseUrl}/entradas/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
         body: json.encode(entrada.toJson()),
       );
 
@@ -144,12 +122,10 @@ class EntradaProvider with ChangeNotifier {
 
   Future<void> deleteEntrada(int id) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.delete(
         Uri.parse('${ApiServiceJWT.baseUrl}/entradas/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
       );
 
       if (response.statusCode == 204) {

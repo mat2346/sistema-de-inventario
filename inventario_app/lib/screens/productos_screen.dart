@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 import '../models/producto.dart';
 import '../models/inventario.dart';
 import '../providers/producto_provider.dart';
@@ -1094,7 +1095,7 @@ class _ProductosScreenState extends State<ProductosScreen>
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: () {

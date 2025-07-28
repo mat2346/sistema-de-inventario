@@ -10,10 +10,8 @@ class JwtHeaders {
     };
 
     final accessToken = await TokenStorage.getAccessToken();
-    if (accessToken != null) {
+    if (accessToken != null && accessToken.isNotEmpty) {
       headers['Authorization'] = 'Bearer $accessToken';
-    } else {
-      headers['Authorization'] = 'Bearer ';
     }
 
     return headers;

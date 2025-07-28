@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/salida.dart';
 import '../services/api_service_jwt.dart';
+import '../services/jwt_headers.dart';
 
 class SalidaProvider with ChangeNotifier {
   List<Salida> _salidas = [];
@@ -19,14 +20,11 @@ class SalidaProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.get(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
       );
-
 
       if (response.statusCode == 200) {
         try {
@@ -41,7 +39,7 @@ class SalidaProvider with ChangeNotifier {
             // Si la respuesta es un objeto con resultados paginados
             if (responseData.containsKey('results')) {
               final results = responseData['results'] as List;
-             
+
               _salidas =
                   results.map((json) {
                     return Salida.fromJson(json);
@@ -71,12 +69,10 @@ class SalidaProvider with ChangeNotifier {
 
   Future<void> addSalida(Salida salida) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.post(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
         body: json.encode(salida.toJson()),
       );
 
@@ -94,12 +90,10 @@ class SalidaProvider with ChangeNotifier {
 
   Future<void> updateSalida(int id, Salida salida) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.put(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
         body: json.encode(salida.toJson()),
       );
 
@@ -120,12 +114,10 @@ class SalidaProvider with ChangeNotifier {
 
   Future<void> deleteSalida(int id) async {
     try {
+      final headers = await JwtHeaders.getHeaders();
       final response = await http.delete(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/$id/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: headers,
       );
 
       if (response.statusCode == 204) {
