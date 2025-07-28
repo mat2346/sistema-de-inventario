@@ -13,7 +13,7 @@ class CategoriasScreen extends StatefulWidget {
   State<CategoriasScreen> createState() => _CategoriasScreenState();
 }
 
-class _CategoriasScreenState extends State<CategoriasScreen> 
+class _CategoriasScreenState extends State<CategoriasScreen>
     with CrudOperationsMixin, TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -23,19 +23,15 @@ class _CategoriasScreenState extends State<CategoriasScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     // Cargar categorías del backend al inicializar
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -55,10 +51,18 @@ class _CategoriasScreenState extends State<CategoriasScreen>
     if (_searchQuery.isEmpty) {
       return provider.categorias;
     }
-    return provider.categorias.where((categoria) =>
-      categoria.nombre.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-      categoria.descripcion?.toLowerCase().contains(_searchQuery.toLowerCase()) == true
-    ).toList();
+    return provider.categorias
+        .where(
+          (categoria) =>
+              categoria.nombre.toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              categoria.descripcion?.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ==
+                  true,
+        )
+        .toList();
   }
 
   @override
@@ -77,13 +81,16 @@ class _CategoriasScreenState extends State<CategoriasScreen>
               _buildSearchHeader(),
               Expanded(
                 child: RefreshableListWidget<CategoriaProvider>(
-                  onRefresh: () => context.read<CategoriaProvider>().loadCategorias(),
-                  isEmpty: (provider) => _getFilteredCategories(provider).isEmpty,
+                  onRefresh:
+                      () => context.read<CategoriaProvider>().loadCategorias(),
+                  isEmpty:
+                      (provider) => _getFilteredCategories(provider).isEmpty,
                   isLoading: (provider) => provider.isLoading,
                   getError: (provider) => provider.error,
-                  emptyTitle: _searchQuery.isEmpty 
-                    ? 'No hay categorías registradas'
-                    : 'No se encontraron categorías',
+                  emptyTitle:
+                      _searchQuery.isEmpty
+                          ? 'No hay categorías registradas'
+                          : 'No se encontraron categorías',
                   emptySubtitle: 'Toca el botón + para agregar una',
                   emptyIcon: Icons.category,
                   onEmpty: () => _showCategoriaDialog(context),
@@ -183,18 +190,25 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Buscar categorías...',
-                  prefixIcon: Icon(Icons.search, color: ToyosakiColors.accentGreen),
-                  suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear, color: ToyosakiColors.mediumGrey),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: ToyosakiColors.accentGreen,
+                  ),
+                  suffixIcon:
+                      _searchQuery.isNotEmpty
+                          ? IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: ToyosakiColors.mediumGrey,
+                            ),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _searchQuery = '';
+                              });
+                            },
+                          )
+                          : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
@@ -214,7 +228,7 @@ class _CategoriasScreenState extends State<CategoriasScreen>
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Estadísticas
             Consumer<CategoriaProvider>(
               builder: (context, provider, child) {
@@ -224,14 +238,16 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.3),
-                    ),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.category_outlined, color: ToyosakiColors.secondaryYellow, size: 20),
+                      Icon(
+                        Icons.category_outlined,
+                        color: ToyosakiColors.secondaryYellow,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '${categories.length} categorías',
@@ -268,19 +284,14 @@ class _CategoriasScreenState extends State<CategoriasScreen>
       child: Card(
         elevation: 4,
         shadowColor: ToyosakiColors.accentGreen.withOpacity(0.2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.white,
-                categoryColor.withOpacity(0.05),
-              ],
+              colors: [Colors.white, categoryColor.withOpacity(0.05)],
             ),
           ),
           child: Padding(
@@ -299,14 +310,10 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                       width: 2,
                     ),
                   ),
-                  child: Icon(
-                    categoryIcon,
-                    color: categoryColor,
-                    size: 28,
-                  ),
+                  child: Icon(categoryIcon, color: categoryColor, size: 28),
                 ),
                 const SizedBox(width: 16),
-                
+
                 // Información de la categoría
                 Expanded(
                   child: Column(
@@ -320,7 +327,8 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                           color: ToyosakiColors.darkGrey,
                         ),
                       ),
-                      if (categoria.descripcion != null && categoria.descripcion!.isNotEmpty) ...[
+                      if (categoria.descripcion != null &&
+                          categoria.descripcion!.isNotEmpty) ...[
                         const SizedBox(height: 6),
                         Text(
                           categoria.descripcion!,
@@ -334,7 +342,7 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                         ),
                       ],
                       const SizedBox(height: 8),
-                      
+
                       // Chip con color de categoría
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -357,7 +365,7 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                     ],
                   ),
                 ),
-                
+
                 // Botones de acción
                 Column(
                   children: [
@@ -372,7 +380,11 @@ class _CategoriasScreenState extends State<CategoriasScreen>
                           color: ToyosakiColors.primaryBlue,
                           size: 20,
                         ),
-                        onPressed: () => _showCategoriaDialog(context, categoria: categoria),
+                        onPressed:
+                            () => _showCategoriaDialog(
+                              context,
+                              categoria: categoria,
+                            ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -404,7 +416,10 @@ class _CategoriasScreenState extends State<CategoriasScreen>
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [ToyosakiColors.accentGreen, ToyosakiColors.accentGreen.withOpacity(0.8)],
+          colors: [
+            ToyosakiColors.accentGreen,
+            ToyosakiColors.accentGreen.withOpacity(0.8),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -417,131 +432,153 @@ class _CategoriasScreenState extends State<CategoriasScreen>
         elevation: 0,
         label: const Text(
           'Nueva Categoría',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        icon: const Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-        ),
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
       ),
     );
   }
 
   void _showCategoriaDialog(BuildContext context, {Categoria? categoria}) {
-    final nombreController = TextEditingController(text: categoria?.nombre ?? '');
-    final descripcionController = TextEditingController(text: categoria?.descripcion ?? '');
+    final nombreController = TextEditingController(
+      text: categoria?.nombre ?? '',
+    );
+    final descripcionController = TextEditingController(
+      text: categoria?.descripcion ?? '',
+    );
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: ToyosakiColors.accentGreen.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                categoria == null ? Icons.add_circle_outline : Icons.edit_outlined,
-                color: ToyosakiColors.accentGreen,
-              ),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(width: 12),
-            Text(categoria == null ? 'Nueva Categoría' : 'Editar Categoría'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nombreController,
-              decoration: InputDecoration(
-                labelText: 'Nombre de la categoría',
-                hintText: 'Ej: Motor, Frenos, Transmisión...',
-                prefixIcon: Icon(Icons.category_outlined, color: ToyosakiColors.accentGreen),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: ToyosakiColors.accentGreen, width: 2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: descripcionController,
-              decoration: InputDecoration(
-                labelText: 'Descripción (opcional)',
-                hintText: 'Describe el tipo de repuestos...',
-                prefixIcon: Icon(Icons.description_outlined, color: ToyosakiColors.accentGreen),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: ToyosakiColors.accentGreen, width: 2),
-                ),
-              ),
-              maxLines: 3,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancelar',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (nombreController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Por favor ingrese un nombre'),
-                    backgroundColor: ToyosakiColors.errorRed,
+            title: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ToyosakiColors.accentGreen.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                );
-                return;
-              }
-
-              final nuevaCategoria = Categoria(
-                id: categoria?.id,
-                nombre: nombreController.text.trim(),
-                descripcion: descripcionController.text.trim().isEmpty 
-                    ? null 
-                    : descripcionController.text.trim(),
-              );
-
-              final provider = context.read<CategoriaProvider>();
-
-              await handleSaveOperation(
-                operation: categoria == null
-                    ? provider.addCategoria(nuevaCategoria)
-                    : provider.updateCategoria(categoria.id!, nuevaCategoria),
-                isUpdate: categoria != null,
-                itemType: 'Categoría',
-                onSuccess: () => Navigator.pop(context),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ToyosakiColors.accentGreen,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+                  child: Icon(
+                    categoria == null
+                        ? Icons.add_circle_outline
+                        : Icons.edit_outlined,
+                    color: ToyosakiColors.accentGreen,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  categoria == null ? 'Nueva Categoría' : 'Editar Categoría',
+                ),
+              ],
             ),
-            child: Text(categoria == null ? 'Crear' : 'Actualizar'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nombreController,
+                  decoration: InputDecoration(
+                    labelText: 'Nombre de la categoría',
+                    hintText: 'Ej: Motor, Frenos, Transmisión...',
+                    prefixIcon: Icon(
+                      Icons.category_outlined,
+                      color: ToyosakiColors.accentGreen,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: ToyosakiColors.accentGreen,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: descripcionController,
+                  decoration: InputDecoration(
+                    labelText: 'Descripción (opcional)',
+                    hintText: 'Describe el tipo de repuestos...',
+                    prefixIcon: Icon(
+                      Icons.description_outlined,
+                      color: ToyosakiColors.accentGreen,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: ToyosakiColors.accentGreen,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (nombreController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Por favor ingrese un nombre'),
+                        backgroundColor: ToyosakiColors.errorRed,
+                      ),
+                    );
+                    return;
+                  }
+
+                  final nuevaCategoria = Categoria(
+                    id: categoria?.id,
+                    nombre: nombreController.text.trim(),
+                    descripcion:
+                        descripcionController.text.trim().isEmpty
+                            ? null
+                            : descripcionController.text.trim(),
+                  );
+
+                  final provider = context.read<CategoriaProvider>();
+
+                  await handleSaveOperation(
+                    operation:
+                        categoria == null
+                            ? provider.addCategoria(nuevaCategoria)
+                            : provider.updateCategoria(
+                              categoria.id!,
+                              nuevaCategoria,
+                            ),
+                    isUpdate: categoria != null,
+                    itemType: 'Categoría',
+                    onSuccess: () => Navigator.pop(context),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ToyosakiColors.accentGreen,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(categoria == null ? 'Crear' : 'Actualizar'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

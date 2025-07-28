@@ -1,9 +1,14 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
-
 class AppConfig {
-  // Configuración del backend - DETECTA PLATAFORMA AUTOMÁTICAMENTE
+  // Configuración del backend - URL DE PRODUCCIÓN EN KOYEB
   static String get baseUrl {
+    // URL de producción en Koyeb
+    return 'https://honest-sibley-jssre-3d530483.koyeb.app/api';
+
+    // Para desarrollo local, puedes comentar la línea de arriba y descomentar las siguientes:
+    /*
+    import 'dart:io';
+    import 'package:flutter/foundation.dart';
+    
     if (kIsWeb) {
       // Para web usar localhost
       return 'http://127.0.0.1:8000/api';
@@ -17,6 +22,7 @@ class AppConfig {
       // Para Windows/Desktop
       return 'http://127.0.0.1:8000/api';
     }
+    */
   }
 
   // URLs específicas del sistema de autenticación ÚNICO

@@ -11,7 +11,7 @@ echo "🔧 Actualizando pip, setuptools y wheel..."
 pip install --upgrade pip setuptools wheel
 
 echo "📦 Intentando instalar psycopg[binary]..."
-if pip install "psycopg[binary]==3.2.9"; then
+if pip install "psycopg[binary]==3.1.18"; then
     echo "✅ psycopg[binary] instalado exitosamente"
     export USE_PSYCOPG3=true
 else

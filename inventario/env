@@ -1,0 +1,29 @@
+
+
+# Django Configuration
+SECRET_KEY=nueva-clave-secreta-super-segura-2024-abc123xyz
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+
+# Supabase PostgreSQL Database Configuration (Transaction Pooler - IPv4)
+DATABASE_URL=postgresql://postgres.aktnslxsmjsvxsyngodg:5ZtytJ.DvxDuD9x@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+
+# Supabase Direct Connection (IPv6 issue - disabled)
+# DATABASE_URL=postgresql://postgres:5ZtytJ.DvxDuD9x@db.aktnslxsmjsvxsyngodg.supabase.co:5432/postgres?sslmode=require
+
+# Local PostgreSQL for development (fallback)
+# DATABASE_URL=postgresql://inventario_db:inventario_db@localhost:5432/inventario_db
+
+# Database fallback (individual variables for Supabase Pooler)
+DB_NAME=postgres
+DB_USER=postgres.aktnslxsmjsvxsyngodg
+DB_PASSWORD=5ZtytJ.DvxDuD9x
+DB_HOST=aws-0-us-east-1.pooler.supabase.com
+DB_PORT=6543
+
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME=dqqikssqi
+CLOUDINARY_API_KEY=343216279138385
+CLOUDINARY_API_SECRET=JptMT_4ppO2t3PaV22nFywEFPHc
+
+
