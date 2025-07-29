@@ -13,14 +13,19 @@ class AuthServiceJWT {
     String password,
   ) async {
     try {
+      final url = '$baseUrl/auth/login/';
+   
+
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/login/'),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
         body: json.encode({'nombre': nombre, 'password': password}),
       );
+
+      
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -56,6 +61,7 @@ class AuthServiceJWT {
         };
       }
     } catch (e) {
+      print('💥 AuthService Error: $e');
       return {
         'success': false,
         'message': 'Error de conexión: ${e.toString()}',

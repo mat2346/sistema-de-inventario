@@ -52,7 +52,6 @@ class _AuthWrapperJWTState extends State<AuthWrapperJWT> {
     );
   }
 
-
   Widget _buildLoadingScreen() {
     return Scaffold(
       body: Container(

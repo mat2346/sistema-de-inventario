@@ -18,6 +18,7 @@ class TokenStorage {
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(_accessTokenKey);
+
     return token;
   }
 
@@ -28,7 +29,7 @@ class TokenStorage {
     return token;
   }
 
-  // Limpiar tokens
+  // Limpiar tokens (logout)
   static Future<void> clearTokens() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_accessTokenKey);

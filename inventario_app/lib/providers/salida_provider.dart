@@ -73,7 +73,7 @@ class SalidaProvider with ChangeNotifier {
       final salidaJson = salida.toJson();
 
       // Debug: Imprimir los datos que se van a enviar
-      print('Datos a enviar: ${json.encode(salidaJson)}');
+    
 
       final response = await http.post(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
@@ -81,8 +81,7 @@ class SalidaProvider with ChangeNotifier {
         body: json.encode(salidaJson),
       );
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+    
 
       if (response.statusCode == 201) {
         final newSalida = Salida.fromJson(json.decode(response.body));
@@ -94,7 +93,7 @@ class SalidaProvider with ChangeNotifier {
         );
       }
     } catch (e) {
-      print('Error en addSalida: $e');
+  
       throw Exception('Error de conexión: $e');
     }
   }

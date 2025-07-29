@@ -40,11 +40,19 @@ class AuthProviderJWT extends ChangeNotifier {
     _setError(null);
 
     try {
+      
       final result = await AuthServiceJWT.login(nombre, password);
+     
 
       if (result['success']) {
         _currentEmpleado = result['empleado'];
         _setAuthenticated(true);
+
+        
+        // Forzar notificación adicional después de un delay
+        await Future.delayed(Duration(milliseconds: 100));
+        notifyListeners();
+        
         return true;
       } else {
         _setError(result['message']);
@@ -84,16 +92,21 @@ class AuthProviderJWT extends ChangeNotifier {
   /// Verificar sesión actual
   Future<void> checkCurrentSession() async {
     try {
+     
       final result = await AuthServiceJWT.checkSession();
+     
 
       if (result['authenticated']) {
         _currentEmpleado = result['empleado'];
         _setAuthenticated(true);
+   
       } else {
         _currentEmpleado = null;
         _setAuthenticated(false);
+       
       }
     } catch (e) {
+     
       _currentEmpleado = null;
       _setAuthenticated(false);
     }
