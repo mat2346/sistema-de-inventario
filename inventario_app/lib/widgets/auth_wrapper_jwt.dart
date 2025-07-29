@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider_jwt.dart';
-import '../screens/toyosaki_login_screen_jwt.dart';
+import '../screens/toyosaki_login_screen.dart';
 import '../screens/home_screen.dart';
 
 class AuthWrapperJWT extends StatefulWidget {
@@ -47,10 +47,11 @@ class _AuthWrapperJWTState extends State<AuthWrapperJWT> {
           return const HomeScreen();
         }
 
-        return const ToyosakiLoginScreenJWT();
+        return const ToyosakiLoginScreen();
       },
     );
   }
+
 
   Widget _buildLoadingScreen() {
     return Scaffold(

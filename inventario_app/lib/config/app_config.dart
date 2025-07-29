@@ -2,7 +2,7 @@ class AppConfig {
   // Configuración del backend - URL DE PRODUCCIÓN EN KOYEB
   static String get baseUrl {
     // URL de producción en Koyeb
-    return 'https://honest-sibley-jssre-3d530483.koyeb.app/api';
+    return 'https://dynamic-eve-jssre-24670900.koyeb.app/api';
 
     // Para desarrollo local, puedes comentar la línea de arriba y descomentar las siguientes:
     /*

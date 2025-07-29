@@ -10,6 +10,8 @@ class Salida {
   final int cantidad;
   final String? motivo;
   final DateTime fecha;
+  final bool esVenta;
+  final double? monto;
 
   Salida({
     this.id,
@@ -19,6 +21,8 @@ class Salida {
     required this.cantidad,
     this.motivo,
     required this.fecha,
+    this.esVenta = false,
+    this.monto,
   });
 
   factory Salida.fromJson(Map<String, dynamic> json) {
@@ -68,7 +72,27 @@ class Salida {
       cantidad: json['cantidad'] ?? 0,
       motivo: json['motivo'],
       fecha: DateTime.parse(json['fecha'] ?? DateTime.now().toIso8601String()),
+      esVenta: json['es_venta'] ?? false,
+      monto: _parseDouble(json['monto']),
     );
+  }
+
+  // Método helper para manejar conversión segura a double desde Decimal
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) {
+      // Manejar string que puede venir del DecimalField de Django
+      if (value.isEmpty) return null;
+      return double.tryParse(value);
+    }
+    // Si es un número pero no double/int, intentar convertir
+    try {
+      return double.parse(value.toString());
+    } catch (e) {
+      return null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -79,7 +103,10 @@ class Salida {
       'empleado': empleado.id,
       'cantidad': cantidad,
       if (motivo != null) 'motivo': motivo,
-      'fecha': fecha.toIso8601String(),
+      'fecha': fecha.toIso8601String().split('.')[0], // Remover microsegundos
+      'es_venta': esVenta,
+      // Enviar monto como string para compatibilidad con DecimalField de Django
+      'monto': esVenta && monto != null ? monto!.toStringAsFixed(2) : null,
     };
   }
 
@@ -91,6 +118,8 @@ class Salida {
     int? cantidad,
     String? motivo,
     DateTime? fecha,
+    bool? esVenta,
+    double? monto,
   }) {
     return Salida(
       id: id ?? this.id,
@@ -100,6 +129,8 @@ class Salida {
       cantidad: cantidad ?? this.cantidad,
       motivo: motivo ?? this.motivo,
       fecha: fecha ?? this.fecha,
+      esVenta: esVenta ?? this.esVenta,
+      monto: monto ?? this.monto,
     );
   }
 }

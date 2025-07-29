@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  
+  <!-- Carro blanco simplificado -->
+  <path
+      android:pathData="M30,40L78,40A2,2 0,0 1,80 42L80,50A2,2 0,0 1,78 52L30,52A2,2 0,0 1,28 50L28,42A2,2 0,0 1,30 40Z"
+      android:fillColor="#FFFFFF"/>
+  
+  <!-- Parabrisas -->
+  <path
+      android:pathData="M32,40L76,40L74,34L34,34Z"
+      android:fillColor="#FFFFFF"/>
+  
+  <!-- Ruedas -->
+  <path
+      android:pathData="M36,54C37.7,54 39,55.3 39,57C39,58.7 37.7,60 36,60C34.3,60 33,58.7 33,57C33,55.3 34.3,54 36,54Z"
+      android:fillColor="#FFFFFF"/>
+  <path
+      android:pathData="M72,54C73.7,54 75,55.3 75,57C75,58.7 73.7,60 72,60C70.3,60 69,58.7 69,57C69,55.3 70.3,54 72,54Z"
+      android:fillColor="#FFFFFF"/>
+  
+  <!-- Plataforma -->
+  <path
+      android:pathData="M25,62L83,62A2,2 0,0 1,85 64L85,66A2,2 0,0 1,83 68L25,68A2,2 0,0 1,23 66L23,64A2,2 0,0 1,25 62Z"
+      android:fillColor="#FFFFFF"/>
+  
+  <!-- Poste -->
+  <path
+      android:pathData="M53,68L53,74A1,1 0,0 0,54 75L54,75A1,1 0,0 0,55 74L55,68Z"
+      android:fillColor="#FFFFFF"/>
+  
+</vector>

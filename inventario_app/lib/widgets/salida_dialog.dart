@@ -21,10 +21,12 @@ class _SalidaDialogState extends State<SalidaDialog> {
   final _formKey = GlobalKey<FormState>();
   final _cantidadController = TextEditingController();
   final _motivoController = TextEditingController();
+  final _montoController = TextEditingController();
 
   Producto? _selectedProducto;
   Sucursal? _selectedSucursal;
   bool _isLoading = false;
+  bool _esVenta = false;
 
   @override
   void initState() {
@@ -63,10 +65,10 @@ class _SalidaDialogState extends State<SalidaDialog> {
           _selectedSucursal = sucursal;
           _cantidadController.text = widget.salida!.cantidad.toString();
           _motivoController.text = widget.salida!.motivo ?? '';
+          _esVenta = widget.salida!.esVenta;
+          _montoController.text = widget.salida!.monto?.toString() ?? '';
         });
       }
-
-    
     }
   }
 
@@ -74,6 +76,7 @@ class _SalidaDialogState extends State<SalidaDialog> {
   void dispose() {
     _cantidadController.dispose();
     _motivoController.dispose();
+    _montoController.dispose();
     super.dispose();
   }
 
@@ -163,6 +166,8 @@ class _SalidaDialogState extends State<SalidaDialog> {
                 _buildCantidadField(),
                 const SizedBox(height: 16),
                 _buildMotivoField(),
+                const SizedBox(height: 16),
+                _buildVentaSection(),
               ],
             ),
           ),
@@ -229,11 +234,15 @@ class _SalidaDialogState extends State<SalidaDialog> {
                 hintText: 'Seleccionar producto',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(
+                    color: Colors.red.withValues(alpha: 0.3),
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(
+                    color: Colors.red.withValues(alpha: 0.3),
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -308,11 +317,15 @@ class _SalidaDialogState extends State<SalidaDialog> {
                 hintText: 'Seleccionar sucursal',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(
+                    color: Colors.red.withValues(alpha: 0.3),
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(
+                    color: Colors.red.withValues(alpha: 0.3),
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -443,6 +456,97 @@ class _SalidaDialogState extends State<SalidaDialog> {
     );
   }
 
+  Widget _buildVentaSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+              value: _esVenta,
+              onChanged: (bool? value) {
+                setState(() {
+                  _esVenta = value ?? false;
+                  if (!_esVenta) {
+                    _montoController.clear();
+                  }
+                });
+              },
+              activeColor: Colors.green,
+            ),
+            Text(
+              '¿Es una venta?',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.red,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+        if (_esVenta) ...[
+          const SizedBox(height: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Monto de la venta *',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.green[700],
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: _montoController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Ingrese el monto',
+                  prefixText: '\$ ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: Colors.green.withOpacity(0.3),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: Colors.green.withOpacity(0.3),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.green, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                validator: (value) {
+                  if (_esVenta) {
+                    if (value == null || value.isEmpty) {
+                      return 'El monto es obligatorio para ventas';
+                    }
+                    final monto = double.tryParse(value);
+                    if (monto == null || monto <= 0) {
+                      return 'Por favor ingrese un monto válido';
+                    }
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
   Future<void> _saveSalida() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -460,6 +564,11 @@ class _SalidaDialogState extends State<SalidaDialog> {
         cantidad: int.parse(_cantidadController.text),
         motivo: _motivoController.text.isEmpty ? null : _motivoController.text,
         fecha: widget.salida?.fecha ?? DateTime.now(),
+        esVenta: _esVenta,
+        monto:
+            _esVenta && _montoController.text.isNotEmpty
+                ? double.parse(_montoController.text)
+                : null,
       );
 
       if (widget.salida == null) {

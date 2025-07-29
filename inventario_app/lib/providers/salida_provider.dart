@@ -70,20 +70,31 @@ class SalidaProvider with ChangeNotifier {
   Future<void> addSalida(Salida salida) async {
     try {
       final headers = await JwtHeaders.getHeaders();
+      final salidaJson = salida.toJson();
+
+      // Debug: Imprimir los datos que se van a enviar
+      print('Datos a enviar: ${json.encode(salidaJson)}');
+
       final response = await http.post(
         Uri.parse('${ApiServiceJWT.baseUrl}/salidas/'),
         headers: headers,
-        body: json.encode(salida.toJson()),
+        body: json.encode(salidaJson),
       );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 201) {
         final newSalida = Salida.fromJson(json.decode(response.body));
         _salidas.add(newSalida);
         notifyListeners();
       } else {
-        throw Exception('Error al crear salida: ${response.statusCode}');
+        throw Exception(
+          'Error al crear salida: ${response.statusCode} - ${response.body}',
+        );
       }
     } catch (e) {
+      print('Error en addSalida: $e');
       throw Exception('Error de conexión: $e');
     }
   }

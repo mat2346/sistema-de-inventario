@@ -224,6 +224,18 @@ class _SalidasScreenState extends State<SalidasScreen>
                       )
                       .length;
 
+              final ventas = salidas.where((s) => s.esVenta).length;
+              final ventasHoy =
+                  salidas
+                      .where(
+                        (s) =>
+                            s.esVenta &&
+                            s.fecha.year == today.year &&
+                            s.fecha.month == today.month &&
+                            s.fecha.day == today.day,
+                      )
+                      .length;
+
               return Row(
                 children: [
                   Expanded(
@@ -246,9 +258,18 @@ class _SalidasScreenState extends State<SalidasScreen>
                   const SizedBox(width: 6),
                   Expanded(
                     child: _buildCompactStat(
-                      'Este Mes',
-                      '${salidas.where((s) => s.fecha.month == today.month).length}',
-                      Icons.calendar_month,
+                      'Ventas',
+                      '$ventas',
+                      Icons.monetization_on,
+                      Colors.green,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: _buildCompactStat(
+                      'V. Hoy',
+                      '$ventasHoy',
+                      Icons.trending_up,
                       Colors.orange,
                     ),
                   ),
@@ -355,6 +376,43 @@ class _SalidasScreenState extends State<SalidasScreen>
                             fontSize: 12,
                             color: Colors.grey[600],
                           ),
+                        ),
+                      if (salida.esVenta)
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: Colors.green.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Text(
+                                'VENTA',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green[700],
+                                ),
+                              ),
+                            ),
+                            if (salida.monto != null) ...[
+                              const SizedBox(width: 6),
+                              Text(
+                                '\$${salida.monto!.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green[700],
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                     ],
                   ),
